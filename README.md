@@ -1,11 +1,9 @@
-# Card Detector
-Python + OpenCV script to detect playing cards in an image. It uses [template matching](http://docs.opencv.org/3.1.0/d4/dc6/tutorial_py_template_matching.html).
+This code works with python version 2.7.18
 
-# Installation
-Make sure python, open CV and numpy are installed. The simplest way is to use [Anaconda](https://www.continuum.io/downloads).
-
-# Startup
-
-```
-python main.py
-```
+Packages for code include:
+  Pillow: 6.2.2
+  numpy: 1.16.6
+  opencv-python: 4.2.0.32
+  pip: 20.3.4
+  setuptools: 44.1.1
+  wheel: 0.36.2

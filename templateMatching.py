@@ -8,7 +8,7 @@ import screen
 def getMatches(image, template, threshold):
     result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
     # screen.showImage(result)
-    loc = np.where( result >= threshold)
+    loc = np.where(result >= threshold)
     results = zip(*loc[::-1])
     return results
     
