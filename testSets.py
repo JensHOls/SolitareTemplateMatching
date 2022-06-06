@@ -69,3 +69,5 @@ t12 = [s9,s6,d7,sa,hk,d8,h7,h6,cj,d5,c2,s7,h9,dq,ck,h3,c7,c9,h2,s3,c4,d10,s2,s5,
 
 t13 = [hq,dk,dj,c10,s7,hk,ha,c3,h5,h2,d6,dq,ck,h3,d5,s5,da,h9,s8,c6,cq]
 
+suits = ['spade', 'heart', 'club', 'diamond']
+values = ['ace', 'king', 'queen', 'jack', 'ten', 'nine', 'eight', 'seven', 'six', 'five', 'four', 'three', 'two']

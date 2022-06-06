@@ -1,7 +1,5 @@
-import sys
 import cv2
 import numpy as np
-import screen
 
 # find all matches of the template in the image
 # returns an array of (x, y) coordinate of the top/left point of each match
