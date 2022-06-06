@@ -5,6 +5,7 @@ import os.path as path
 import templateMatching
 import screen
 import testSets
+import time
 from functools import cmp_to_key
 
 # in test mode, use a test image as input, otherwise use live screen capture
@@ -18,18 +19,16 @@ testImages = ['test12.png']
 
 # how good does the match have to be? value between 0 and 1.
 # 1 means it has to be a perfect match
-# matchingThreshold = .83
 matchingThresholds = [.80,.81,.82,.83,.84,.85,.86,.87]
 matchingThresholds = [.84]
 
 # print('threshold: ' + str(matchingThreshold)+'\n')
 
-# range of rotation to be applied to templates
+# range of rotation to be applied to source image
 rotations = [8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, 0]
-# rotations = [8,-8]
+rotations = [0]
 
 # it's faster to scan a smaller area rather than the whole screen
-# 3088x2316
 areaToScanTopLeft = (0L, 0L)
 areaToScanBottomRight = (4032L, 3024L)
 
@@ -41,6 +40,8 @@ allCards = {v + ' ' + s for s in suits for v in values}
 
 # cards found so far
 cardsDetected = set()
+
+
 
 
 # prints missing positives and false positives of cards for a given test and corresponding cardset
@@ -226,6 +227,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         if testMode:
             findErrors(testImage)
             if show:
+                x=0
                 rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30L, 30L))
                 showImage(testImage, rois)
 
@@ -239,9 +241,9 @@ if testMode:
     for threshold in matchingThresholds:
         print('THRESHOLD: ' + str(threshold) + '\n')
         for test in testImages:
+            start_time = time.time()
             watchAndDisplayCards(test, threshold)
-
-
+            print("--- %s seconds ---" % (time.time() - start_time))
 else:
     # keep watching for cards forever
     while True:
