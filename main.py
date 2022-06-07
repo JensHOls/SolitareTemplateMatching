@@ -14,7 +14,7 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 # testImages = ['test12.png']
 
@@ -92,7 +92,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allValueMatches = allValueMatches + valueMatches
 
             backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
-            backsideMatches = map(lambda match: {'topLeft': match, 'name': suit}, backsideMatches)
+            backsideMatches = map(lambda match: {'topLeft': match, 'name': 'back'}, backsideMatches)
 
             allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
 
