@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 
 # adds padding around given image. Code in method is from: https://stackoverflow.com/questions/43391205/add-padding-to-images-to-get-them-into-the-same-shape
-def addPadding(image):
+def addPadding(image, dimensions):
     old_image_height, old_image_width, channels = image.shape
     # create new image of desired size and color (blue) for padding
-    new_image_width = 4032
-    new_image_height = 3024
+    new_image_width = dimensions[0]
+    new_image_height = dimensions[1]
     color = (255, 255, 255)
     result = np.full((new_image_height, new_image_width, channels), color, dtype=np.uint8)
 
