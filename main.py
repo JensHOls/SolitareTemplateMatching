@@ -39,6 +39,9 @@ suitsDict = {}
 for suit in suits:
     suitsDict[suit] = getImage(suit, True)
 
+backsideTemplate = getImage("backside", True)
+
+
 valuesDict = {}
 for value in values:
     valuesDict[value] = getImage(value, True)
@@ -87,7 +90,12 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                         cardsDetected.add(value + ' ' + suit)
 
                     allValueMatches = allValueMatches + valueMatches
-            allMatches = allMatches + suitMatches + allValueMatches
+
+            backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
+            backsideMatches = map(lambda match: {'topLeft': match, 'name': suit}, backsideMatches)
+
+            allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
+
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
