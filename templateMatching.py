@@ -14,7 +14,7 @@ def getMatches(image, template, threshold):
 def highlightRois(image, roisCoords, roiWidthHeight):
     rois = []
     for roiCoord in roisCoords:
-        roiTopLeft = roiCoord['topLeft']
+        roiTopLeft = roiCoord['actualLocation']
         name = roiCoord['name']
         # extract the regions of interest from the image
         roiBottomRight = tuple([sum(x) for x in zip(roiTopLeft, roiWidthHeight)])
