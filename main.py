@@ -26,7 +26,7 @@ matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.84]
 # range of rotation to be applied to source image
 rotations = [8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, 0]
-rotations = [0]
+# rotations = [1, 0]
 # it's faster to scan a smaller area rather than the whole screen
 areaToScanTopLeft = (0L, 0L)
 areaToScanBottomRight = (4032L, 3024L)
@@ -51,7 +51,7 @@ def rotationBacktrack(coordinates, degrees = 0):
             # calculate number of radians in a circle
             # nRadians = 360 / (360 / (2 * math.pi))
             # ratio = 0.0174532925199 # nRadians / 360
-            radians = -(0.0174532925199 * degrees)
+            radians = (0.0174532925199 * degrees)
             middleX = dimensions[0] / 2
             middleY = dimensions[1] / 2
             x = x - middleX
@@ -59,6 +59,7 @@ def rotationBacktrack(coordinates, degrees = 0):
             newX = x * cos(radians) - y * sin(radians) + middleX
             newY = x * sin(radians) + y * cos(radians) + middleY
             return (int(newX), int(newY))
+
 
 
 
@@ -95,17 +96,17 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
 
             # get coordinates of rotation backtracked locations
-            updatedMatches = []
+            suitActualLoc = []
             for suitMatch in suitMatchesOrigin:
-                value = rotationBacktrack(suitMatch, rotation)
-                updatedMatches += value
+                result = rotationBacktrack(suitMatch, rotation)
+                suitActualLoc += result
 
             suitMatches = map(lambda match: {'topLeft': match, 'actualLocation': (0, 0), 'name': suit}, suitMatchesOrigin)
             # suitMatches = map(lambda match: {'topLeft': match, 'name': suit}
 
             i = 0
             for match in suitMatches:
-                match['actualLocation'] = (updatedMatches[i], updatedMatches[i+1])
+                match['actualLocation'] = (suitActualLoc[i], suitActualLoc[i+1])
                 i += 2
 
             # We found a suit, now find the associated value above it (if any)
@@ -119,10 +120,21 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 for value in valuesDict:
                     valueTemplate = valuesDict[value]
                     valueMatches = templateMatching.getMatches(searchArea, valueTemplate, matchingThreshold)
+                    # get coordinates of rotation backtracked locations
+                    # valueActualLoc = []
+                    # for match in valueMatches:
+                    #     result = rotationBacktrack(match, rotation)
+                    #     valueActualLoc += result
 
                     valueMatches = map(
                         lambda match: {'actualLocation': (topLeft[0] + match[0], topLeft[1] + match[1]), 'name': value},
                         valueMatches)
+
+                    i = 0
+                    for match in valueMatches:
+                        result = rotationBacktrack(match['actualLocation'], rotation)
+                        match['actualLocation'] = (result[0], result[1])
+                        i += 2
 
                     if (len(valueMatches) > 0):
                         cardsDetected.add(value + ' ' + suit)
