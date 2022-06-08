@@ -15,12 +15,12 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-show = True
+show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
-matchingThresholds = [.80]
+matchingThresholds = [.84]
 # range of rotation to be applied to source image
 rotations = [-1, -2, -3, -4, -5, -6, -7, -8, 1, 2, 3, 4, 5, 6, 7, 8, 0]
 rotations = [0]
@@ -72,6 +72,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                        areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
     allMatches = []
+    allMatchSets = []
     for rotation in rotations:
         image = cv2.imread(path.join('images', testImage))
         # adds padding to prevent going out of bounds when searching in rotated image
@@ -109,11 +110,13 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 bottomRight = (suitMatchTopLeft[0] + 50L, suitMatchTopLeft[1] + 0L)
                 searchArea = areaToScan[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
 
+                # list of maps of values for a given suit match
+                valueMatchSet = []
                 for value in valuesDict:
                     valueTemplate = valuesDict[value]
                     valueMatches = templateMatching.getMatches(searchArea, valueTemplate, matchingThreshold)
 
-                    # map locations of matches for given suit match
+                    # map locations of matches for given value
                     valueMatches = map(
                         lambda match: {'actualLoc': (topLeft[0] + match[0], topLeft[1] + match[1]), 'name': value},
                         valueMatches)
@@ -125,12 +128,17 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
                     # save single instance of every card detected
                     if (len(valueMatches) > 0):
+                        valueMatchSet += valueMatches
                         cardsDetected.add(value + ' ' + suit)
-                    # stroe matches for given suit
+                    # store matches of a given
                     allValueMatches = allValueMatches + valueMatches
+                # add a suit match with its value matches to list of all sets
+                if len(valueMatchSet) > 0:
+                    allMatchSets += (suitMatch, valueMatchSet)
             # store all suit and value matches
             allMatches = allMatches + suitMatches + allValueMatches
 
+    print(allMatchSets)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
