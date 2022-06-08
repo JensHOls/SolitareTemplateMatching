@@ -67,10 +67,13 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         image = imageModification.rotate(image, rotation)
         areaToScan = image[areaToScanTopLeft[1]:areaToScanBottomRight[1], areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
+        backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
+        backsideMatches = map(lambda match: {'topLeft': match, 'name': 'backside'}, backsideMatches)
         for suit in suitsDict:
             suitTemplate = suitsDict[suit]
             suitMatches = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
             suitMatches = map(lambda match: {'topLeft': match, 'name': suit}, suitMatches)
+
 
             # We found a suit, now find the associated value above it (if any)
             allValueMatches = []
@@ -90,9 +93,6 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                         cardsDetected.add(value + ' ' + suit)
 
                     allValueMatches = allValueMatches + valueMatches
-
-            backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
-            backsideMatches = map(lambda match: {'topLeft': match, 'name': 'back'}, backsideMatches)
 
             allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
 
