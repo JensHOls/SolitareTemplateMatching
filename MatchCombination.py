@@ -2,6 +2,7 @@ class MatchCombination:
     loc = [0, 0]
     suit = ''
     ranks = []
+    subGrouped = False
 
     def __init__(self, suit, ranks):
         self.suit = suit['name']
@@ -19,4 +20,8 @@ class MatchCombination:
 
     def getLoc(self):
         return self.loc
+
+    def hasSubGroup(self):
+        return self.subGrouped
+
 

@@ -17,12 +17,12 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
-matchingThresholds = [.84]
+matchingThresholds = [.82]
 # range of rotation to be applied to source image
 rotations = [-1, -2, -3, -4, -5, -6, -7, -8, 1, 2, 3, 4, 5, 6, 7, 8, 0]
 rotations = [0]
@@ -68,10 +68,121 @@ def rotationBacktrack(coordinates, degrees=0):
 
 
 
-
-
+# note: I'm working off the assumption that one set will fit into only one subgroup
 def groupByLoc(sets):
-    boundry = [60, 50]
+    # x,y values for which two matches in reach of each other are put into a subgroup
+    boundry = [25, 25]
+    # holds all subgroups
+    groups = list()
+
+    for set in sets:
+        # only make subgroups for sets that aren't in a subgroup yet
+        if not set.hasSubGroup():
+            subGroup = list()
+            subGroup.append(set)
+            # declare set to be part of a subgroup
+            set.subGrouped = True
+            # look through all sets
+            for pair in sets:
+                if not pair.hasSubGroup():
+                    # add the sets within boundry of set leader to subgroup
+                    if abs(pair.getLoc()[0] - set.getLoc()[0]) <= boundry[0] and abs(
+                            pair.getLoc()[1] - set.getLoc()[1]) <= boundry[1]:
+                        subGroup.append(pair)
+                        # declare set to be part of a subgroup
+                        pair.subGrouped = True
+            groups.append(subGroup)
+    # i = 0
+    # for minorGroup in groups:
+    #     print("SUBGROUP: " + str(i))
+    #     for obj in minorGroup:
+    #         print("SUIT: ")
+    #         print(obj.getSuit())
+    #         print("RANK: ")
+    #         print(obj.getRanks())
+    #         print("LOC: ")
+    #         print(obj.getLoc())
+    #     i += 1
+    #     print("\n")
+    #
+    # print("number of subgroups: " + str(len(groups)))
+    return groups
+
+# concentrate the groups of sets to one set per group
+def concentrateGroups(sets):
+    groups = groupByLoc(sets)
+    rankValueList = list()
+
+    # note: adds only sets to rankValueList where all ranks in set are the most common rank in group, needs update
+    for group in groups:
+        trueRank = mostCommonRank(group)
+        for set in group:
+            ranks = set.getRanks()
+            i = 0
+            for rank in ranks:
+                if rank != trueRank:
+                    break
+                i += 1
+            if i == len(ranks):
+                rankValueList.append(set)
+                break
+
+    return rankValueList
+
+
+
+
+
+# finds the most common rank in a group
+def mostCommonRank(group):
+    rankType = {'foo'}
+    rankType.pop()
+
+    # find each different rank in set
+    for set in group:
+        ranks = set.getRanks()
+        for rank in ranks:
+            rankType.add(rank)
+
+    difRank = [''] * len(rankType)
+    i = 0
+    for type in rankType:
+        difRank[i] = type
+
+    rankCount = [0] * len(difRank)
+    i = 0
+    for type in difRank:
+        n = 0
+        j = 0
+        for set in group:
+            ranks = group[j].getRanks()
+            for rank in ranks:
+                if type == rank:
+                    n += 1
+            j += 1
+        rankCount[i] = n
+        i += 1
+
+    biggest = -1
+    for count in rankCount:
+        if count > biggest:
+            biggest = count
+    i = 0
+    for count in rankCount:
+        if count == biggest:
+            return difRank.pop(i)
+        i += 1
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -196,7 +307,17 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             # store all suit and rank matches
             allMatches = allMatches + suitMatches + allRankMatches
 
-    # printAllSets(allMatchSets)
+    finalList = concentrateGroups(allMatchSets)
+    for e in finalList:
+        print("SUIT: ")
+        print(e.getSuit())
+        print("RANK: ")
+        print(e.getRanks())
+        print("LOC: ")
+        print(e.getLoc())
+        print("\n")
+
+
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
