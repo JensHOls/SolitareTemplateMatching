@@ -16,6 +16,8 @@ from imageModification import addPadding
 # when True displays image with detected areas
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
+for i in testImages:
+    cv2.resize(i, (3088, 2316))
 # testImages = ['test12.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
@@ -95,7 +97,10 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allValueMatches = allValueMatches + valueMatches
 
             allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
+    #afgraens foundation
+    talonfoundationafgraensning = (1209L, 570L)
 
+    #afgraens talon
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
