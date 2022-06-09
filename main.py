@@ -67,7 +67,8 @@ def rotationBacktrack(coordinates, degrees=0):
 
 
 
-
+# TOD0: Unspaghettify this code
+# TOD0: Fix issue described in note
 # note: I'm working off the assumption that one set will fit into only one subgroup
 def groupByLoc(sets):
     # x,y values for which two matches in reach of each other are put into a subgroup
@@ -108,14 +109,18 @@ def groupByLoc(sets):
     # print("number of subgroups: " + str(len(groups)))
     return groups
 
+# TOD0: Unspaghettify this code
 # concentrate the groups of sets to one set per group
 def concentrateGroups(sets):
     groups = groupByLoc(sets)
     rankValueList = list()
 
-    # note: adds only sets to rankValueList where all ranks in set are the most common rank in group, needs update
+    # TOD0: Fix the bug descirbed in note
+    # note: adds only sets to rankValueList where all ranks in set are the most common rank in group
     for group in groups:
+        # get most common rank in group
         trueRank = mostCommonRank(group)
+        # for each group find a set that has only the most common rank, add that set, discard the rest
         for set in group:
             ranks = set.getRanks()
             i = 0
@@ -132,9 +137,10 @@ def concentrateGroups(sets):
 
 
 
-
+# TOD0: Unspaghettify this code
 # finds the most common rank in a group
 def mostCommonRank(group):
+    # holds the different rank types in set, is set() datastructure because it circumvents duplicates
     rankType = {'foo'}
     rankType.pop()
 
@@ -144,12 +150,14 @@ def mostCommonRank(group):
         for rank in ranks:
             rankType.add(rank)
 
+    # move ranks in set to array because array can work with indices
     difRank = [''] * len(rankType)
     i = 0
     for type in rankType:
         difRank[i] = type
 
     rankCount = [0] * len(difRank)
+    # find number of occurrences of each rank type
     i = 0
     for type in difRank:
         n = 0
@@ -163,10 +171,12 @@ def mostCommonRank(group):
         rankCount[i] = n
         i += 1
 
+    # find rank type with the greatest number of occurrences
     biggest = -1
     for count in rankCount:
         if count > biggest:
             biggest = count
+    # return the rank type with the great number of occurrences
     i = 0
     for count in rankCount:
         if count == biggest:
