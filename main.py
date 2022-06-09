@@ -11,6 +11,8 @@ import testSets
 import testMethods
 import time
 from functools import cmp_to_key
+
+from MatchCombination import MatchCombination
 from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
@@ -33,9 +35,9 @@ areaToScanBottomRight = (4032L, 3024L)
 
 # things we're looking for
 suits = testSets.suits
-values = testSets.values
+ranks = testSets.values
 
-allCards = {v + ' ' + s for s in suits for v in values}
+allCards = {v + ' ' + s for s in suits for v in ranks}
 
 # cards found so far
 cardsDetected = set()
@@ -51,15 +53,68 @@ def rotationBacktrack(coordinates, degrees=0):
     y = y - dimensions[1] / 2
     newX = x * cos(radians) - y * sin(radians) + middleX
     newY = x * sin(radians) + y * cos(radians) + middleY
-    return (int(newX), int(newY))
+    return int(newX), int(newY)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def groupByLoc(sets):
+    boundry = [60, 50]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def printAllSets(allMatchSets):
+    for matchSet in allMatchSets:
+        print type(matchSet)
+        print(matchSet)
+        print(matchSet.getSuit)
+        print(matchSet.ranks)
+
+
+
+
+
+
+
 
 suitsDict = {}
 for suit in suits:
     suitsDict[suit] = getImage(suit, True)
 
-valuesDict = {}
-for value in values:
-    valuesDict[value] = getImage(value, True)
+ranksDict = {}
+for rank in ranks:
+    ranksDict[rank] = getImage(rank, True)
 
 # This is the main function that is executed continuously to watch for new cards and display them
 def watchAndDisplayCards(testImage, matchingThreshold):
@@ -72,7 +127,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                        areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
     allMatches = []
-    allMatchSets = []
+    allMatchSets = list()
     for rotation in rotations:
         image = cv2.imread(path.join('images', testImage))
         # adds padding to prevent going out of bounds when searching in rotated image
@@ -101,44 +156,44 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 match['actualLoc'] = (suitActualLoc[i], suitActualLoc[i + 1])
                 i += 2
 
-            # We found a suit, now find the associated value above it (if any)
-            allValueMatches = []
+            # We found a suit, now find the associated rank above it (if any)
+            allRankMatches = []
             for suitMatch in suitMatches:
                 suitMatchTopLeft = suitMatch['topLeft']
-                # define search area for values
+                # define search area for ranks
                 topLeft = (suitMatchTopLeft[0] - 5L, suitMatchTopLeft[1] - 50L)
                 bottomRight = (suitMatchTopLeft[0] + 50L, suitMatchTopLeft[1] + 0L)
                 searchArea = areaToScan[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
 
-                # list of maps of values for a given suit match
-                valueMatchSet = []
-                for value in valuesDict:
-                    valueTemplate = valuesDict[value]
-                    valueMatches = templateMatching.getMatches(searchArea, valueTemplate, matchingThreshold)
+                # list of maps of ranks for a given suit match
+                rankMatchSets = []
+                for rank in ranksDict:
+                    rankTemplate = ranksDict[rank]
+                    rankMatch = templateMatching.getMatches(searchArea, rankTemplate, matchingThreshold)
 
-                    # map locations of matches for given value
-                    valueMatches = map(
-                        lambda match: {'actualLoc': (topLeft[0] + match[0], topLeft[1] + match[1]), 'name': value},
-                        valueMatches)
+                    # map locations of matches for given rank
+                    rankMatch = map(
+                        lambda match: {'actualLoc': (topLeft[0] + match[0], topLeft[1] + match[1]), 'name': rank},
+                        rankMatch)
 
                     # calculate and insert coordinates of matches in 0 degree rotated image into map
-                    for match in valueMatches:
+                    for match in rankMatch:
                         result = rotationBacktrack(match['actualLoc'], rotation)
                         match['actualLoc'] = (result[0], result[1])
 
                     # save single instance of every card detected
-                    if (len(valueMatches) > 0):
-                        valueMatchSet += valueMatches
-                        cardsDetected.add(value + ' ' + suit)
+                    if (len(rankMatch) > 0):
+                        rankMatchSets += rankMatch
+                        cardsDetected.add(rank + ' ' + suit)
                     # store matches of a given
-                    allValueMatches = allValueMatches + valueMatches
-                # add a suit match with its value matches to list of all sets
-                if len(valueMatchSet) > 0:
-                    allMatchSets += (suitMatch, valueMatchSet)
-            # store all suit and value matches
-            allMatches = allMatches + suitMatches + allValueMatches
+                    allRankMatches = allRankMatches + rankMatch
+                # add a suit match with its rank matches to list of all sets
+                if len(rankMatchSets) > 0:
+                    matchCombination = MatchCombination(suitMatch, rankMatchSets)
+                    allMatchSets.append(matchCombination)
+            # store all suit and rank matches
+            allMatches = allMatches + suitMatches + allRankMatches
 
-    print(allMatchSets)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
