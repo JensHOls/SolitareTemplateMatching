@@ -96,10 +96,12 @@ def groupByLoc(sets):
 
 def printAllSets(allMatchSets):
     for matchSet in allMatchSets:
-        print type(matchSet)
-        print(matchSet)
-        print(matchSet.getSuit)
-        print(matchSet.ranks)
+        print("SUIT: " + str(matchSet.getSuit()))
+        print("RANKS: ")
+        ranks = matchSet.getRanks()
+        print(ranks)
+        print("LOC: ")
+        print(matchSet.getLoc())
 
 
 
@@ -189,11 +191,17 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allRankMatches = allRankMatches + rankMatch
                 # add a suit match with its rank matches to list of all sets
                 if len(rankMatchSets) > 0:
+                    print("MATCH START")
+                    print(suitMatch['name'])
+                    for rank in rankMatchSets:
+                        print(rank['name'])
+                    print(rankMatchSets)
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
             allMatches = allMatches + suitMatches + allRankMatches
 
+    printAllSets(allMatchSets)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
