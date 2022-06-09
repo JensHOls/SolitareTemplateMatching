@@ -191,17 +191,12 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allRankMatches = allRankMatches + rankMatch
                 # add a suit match with its rank matches to list of all sets
                 if len(rankMatchSets) > 0:
-                    print("MATCH START")
-                    print(suitMatch['name'])
-                    for rank in rankMatchSets:
-                        print(rank['name'])
-                    print(rankMatchSets)
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
             allMatches = allMatches + suitMatches + allRankMatches
 
-    printAllSets(allMatchSets)
+    # printAllSets(allMatchSets)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
