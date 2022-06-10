@@ -16,8 +16,6 @@ from imageModification import addPadding
 # when True displays image with detected areas
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-for i in testImages:
-    cv2.resize(i, (3088, 2316))
 # testImages = ['test12.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
@@ -39,20 +37,22 @@ cardsDetected = set()
 
 suitsDict = {}
 for suit in suits:
-    suitsDict[suit] = getImage(suit, True)
+    image = getImage(suit, True)
+    suitsDict[suit] = image
 
 backsideTemplate = getImage("backside", True)
 
 
 valuesDict = {}
 for value in values:
-    valuesDict[value] = getImage(value, True)
-
+    image = getImage(value, True)
+    suitsDict[value] = image
 
 # This is the main function that is executed continuously to watch for new cards and display them
 def watchAndDisplayCards(testImage, matchingThreshold):
     cardsDetected.clear()
     originImage = cv2.imread(path.join('images', testImage))
+    originImage = cv2.resize(originImage, (3088, 2316))
     # add padding to image to prevent search area from going out of bounds during template matching
     originImage = addPadding(originImage)
     originImage = screen.imageToBw(originImage)
@@ -97,11 +97,100 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allValueMatches = allValueMatches + valueMatches
 
             allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
-    #afgraens foundation
+
+    #collecting all matches into 'card dictionaries' with coordinates with both rank and suit
+    allMatchesPaired = []
+    for matchOne in allMatches:
+        suitTopLeft = matchOne['topLeft']
+        suitName = matchOne['name']
+        if suitName  == 'heart' or suitName  == 'diamond' or suitName  == 'club' or suitName  == 'spade':
+            for matchTwo in allMatches:
+                typeTopLeft = matchTwo['topLeft']
+                typeName = matchTwo['name']
+                if  typeName  != 'heart' and  typeName  != 'diamond' and  typeName  != 'club' and  typeName  != 'spade' and  typeName  != 'backside':
+                    if suitTopLeft[1]-typeTopLeft[1] < 60:
+                        if (suitTopLeft[0]-typeTopLeft[0] < 25 and suitTopLeft[0]-typeTopLeft[0] > -25):
+                            suitRankPair = {'suitTopLeft': suitTopLeft, 'typeTopLeft': typeTopLeft, 'name': suitName+typeName}
+                            allMatchesPaired.append(suitRankPair)
+
+    #match seperation into column, foundation and talon cards
+    foundationMatches = []
+    columnMatches = []
+    talonMatches = []
     talonfoundationafgraensning = (1209L, 570L)
 
-    #afgraens talon
+    for match in allMatchesPaired:
+        if match['suitTopLeft'][0] > talonfoundationafgraensning[0] and match['suitTopLeft'][1] < talonfoundationafgraensning[1]:
+            foundationMatches.append(match)
+        if match['suitTopLeft'][0] < talonfoundationafgraensning[0] and match['suitTopLeft'][1] < talonfoundationafgraensning[1]:
+            talonMatches.append(match)
+        if match['suitTopLeft'][1] > talonfoundationafgraensning[1]:
+            columnMatches.append(match)
+    print(foundationMatches, columnMatches, talonMatches)
 
+    #finally column rows into columns
+
+    #we sort the cards in terms of x axis (basically, we start at the left most card(
+    columnMatches = sorted(columnMatches, key=lambda match: match['suitTopLeft'][0])
+    backsideMatches = sorted(backsideMatches, key=lambda match: match['topLeft'][0])
+
+    #list with 7 lists in order to seperate column
+    columnMatchesRows = [[],[],[],[],[],[]]
+    backsideMatchesRows = [[], [], [], [], [], []]
+
+    index = 0
+    prev_x = 0
+    #backside into columns
+    for match in backsideMatches:
+        current_x = match['topLeft'][0]
+        difference = current_x - prev_x
+        # the first value
+        if prev_x == 0:
+            prev_x = current_x
+            backsideMatchesRows[index].append(match)
+            continue
+        # for same row
+        if difference < 10:
+            backsideMatchesRows[index].append(match)
+        # with great difference, change row index to append to
+        if difference > 10:
+            index = index + 1
+            backsideMatchesRows[index].append(match)
+        prev_x = current_x
+
+    index = 0
+    prev_x = 0
+
+    #cards into columns
+    for match in columnMatches:
+        current_x = match['suitTopLeft'][0]
+        difference = current_x - prev_x
+        #the first value
+        if prev_x == 0:
+            prev_x = current_x
+            columnMatchesRows[index].append(match)
+            continue
+        #for same row
+        if difference < 10:
+            columnMatchesRows[index].append(match)
+        #for jumping to right side
+        if difference < 227 and current_x-prev_x > 187:
+            columnMatchesRows[index].append(match)
+        #for new row
+        if difference > 10:
+            if difference > 237 or difference < 187:
+                index = index + 1
+                columnMatchesRows[index].append(match)
+        prev_x = current_x
+
+
+        #now we combine the two lists of lists
+
+
+    print(columnMatchesRows)
+
+    #remove duplicates and false positives now (out of scope for this branch)
+    #--------------------------------------------------------------------------
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:
