@@ -17,7 +17,7 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-show = True
+show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
 
@@ -60,6 +60,19 @@ def rotationBacktrack(coordinates, degrees=0):
 
 
 
+def printGroups(groups):
+    i = 0
+    for e in groups:
+        print("NEW GROUP: " + str(i))
+        for val in e:
+            print("SUIT: ")
+            print(val.getSuit())
+            print("RANK: ")
+            print(val.getRanks())
+            print("LOC: ")
+            print(val.getLoc())
+            print("\n")
+        i += 1
 
 
 
@@ -113,13 +126,15 @@ def groupByLoc(sets):
 # concentrate the groups of sets to one set per group
 def concentrateGroups(sets):
     groups = groupByLoc(sets)
+    # printGroups(groups)
     rankValueList = list()
 
     # TOD0: Fix the bug descirbed in note
     # note: adds only sets to rankValueList where all ranks in set are the most common rank in group
     for group in groups:
         # get most common rank in group
-        trueRank = mostCommonRank(group)
+        trueRank = groupIdentifierCounts(group)
+        # print(trueRank)
         # for each group find a set that has only the most common rank, add that set, discard the rest
         for set in group:
             ranks = set.getRanks()
@@ -131,57 +146,55 @@ def concentrateGroups(sets):
             if i == len(ranks):
                 rankValueList.append(set)
                 break
-
+    print(len(rankValueList))
     return rankValueList
 
 
 
+# finds unique suits and ranks
+def findSuitsNRanks(group):
+    uniques = list()
+    i = 0
+    for set in group:
+        ranks = group[i].getRanks()
+        suit = group[i].getSuit()
+        if not uniques.__contains__(suit):
+            uniques.append(suit)
+        for rank in ranks:
+            if not uniques.__contains__(rank):
+                uniques.append(rank)
+        i += 1
+
+    return uniques
+
+
+def combineLists(group):
+    suitRankList = list()
+
+    i = 0
+    for set in group:
+        suit = group[i].getSuit()
+        suitRankList.append(suit)
+        ranks = group[i].getRanks()
+        for rank in ranks:
+            suitRankList.append(rank)
+        i += 1
+    return suitRankList
+
 
 # TOD0: Unspaghettify this code
 # finds the most common rank in a group
-def mostCommonRank(group):
-    # holds the different rank types in set, is set() datastructure because it circumvents duplicates
-    rankType = {'foo'}
-    rankType.pop()
+def groupIdentifierCounts(group):
+    individualRanksNSuits = list()
 
-    # find each different rank in set
-    for set in group:
-        ranks = set.getRanks()
-        for rank in ranks:
-            rankType.add(rank)
+    uniqueSuitsNRanks = findSuitsNRanks(group)
 
-    # move ranks in set to array because array can work with indices
-    difRank = [''] * len(rankType)
-    i = 0
-    for type in rankType:
-        difRank[i] = type
+    individualRanksNSuits = combineLists(group)
 
-    rankCount = [0] * len(difRank)
-    # find number of occurrences of each rank type
-    i = 0
-    for type in difRank:
-        n = 0
-        j = 0
-        for set in group:
-            ranks = group[j].getRanks()
-            for rank in ranks:
-                if type == rank:
-                    n += 1
-            j += 1
-        rankCount[i] = n
-        i += 1
+    uniques = map(lambda name: {'identifier': name, 'number': individualRanksNSuits.count(name)}, uniqueSuitsNRanks)
+    print(uniques)
+    return uniques
 
-    # find rank type with the greatest number of occurrences
-    biggest = -1
-    for count in rankCount:
-        if count > biggest:
-            biggest = count
-    # return the rank type with the great number of occurrences
-    i = 0
-    for count in rankCount:
-        if count == biggest:
-            return difRank.pop(i)
-        i += 1
 
 
 
@@ -318,14 +331,14 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             allMatches = allMatches + suitMatches + allRankMatches
 
     finalList = concentrateGroups(allMatchSets)
-    for e in finalList:
-        print("SUIT: ")
-        print(e.getSuit())
-        print("RANK: ")
-        print(e.getRanks())
-        print("LOC: ")
-        print(e.getLoc())
-        print("\n")
+    # for e in finalList:
+    #     print("SUIT: ")
+    #     print(e.getSuit())
+    #     print("RANK: ")
+    #     print(e.getRanks())
+    #     print("LOC: ")
+    #     print(e.getLoc())
+    #     print("\n")
 
 
     if len(allMatches) != 0:
