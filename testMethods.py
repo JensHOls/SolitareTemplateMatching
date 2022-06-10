@@ -24,7 +24,7 @@ def findErrors(testImage, cardsDetected, identityList = False):
             cardlist.append(identity.getRank() + ' ' + identity.getSuit())
     print(testImage)
     print('\ncards found not in list:')
-    falseIdentify = 0
+    falsePositive = 0
     for cardF in cardlist:
         found = False
         for card in cards:
@@ -32,8 +32,8 @@ def findErrors(testImage, cardsDetected, identityList = False):
                 found = True
         if not found:
             print(cardF + ' is wrong')
-            falseIdentify += 1
-    print(falseIdentify)
+            falsePositive += 1
+    print(falsePositive)
     nMissing = 0
     print('\ncards missed in list:')
     for card in cards:

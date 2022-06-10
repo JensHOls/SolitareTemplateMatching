@@ -18,14 +18,14 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-from matchCleanup import concentrateGroups
+from matchCleanup import concentrateMatches
 
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-# testImages = ['test2.png']
+testImages = ['test11.png']
 
-matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
-# matchingThresholds = [.82]
+# matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
+matchingThresholds = [.80]
 # range of rotation to be applied to source image
 rotations = [-3, -6, 3, 6, 0]
 rotations = [0]
@@ -144,7 +144,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             # store all suit and rank matches
             allMatches = allMatches + suitMatches + allRankMatches
 
-    finalList = concentrateGroups(allMatchSets)
+    finalList = concentrateMatches(allMatchSets)
+
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)

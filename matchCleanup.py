@@ -3,7 +3,7 @@ from Identity import Identity
 from testSets import suits
 
 
-def concentrateGroups(sets):
+def concentrateMatches(sets):
     groups = groupByLoc(sets)
     identityList = list()
     for group in groups:
@@ -46,6 +46,7 @@ def groupByLoc(sets):
 
 # finds most common suit and rank in group
 def typicalIdentifiers(group):
+    # printGroup(group)
     uniqueSuitsNRanks = uniqueIdentifiers(group)
     individualRanksNSuits = concatenateIdentifiers(group)
     # map each unique rank and suit found in set with their number
@@ -57,9 +58,11 @@ def typicalIdentifiers(group):
         if suits.__contains__(identifier['identifier']):
             if identifier['number'] > amplestSuit:
                 typicalSuit = identifier['identifier']
+                amplestSuit = identifier['number']
         else:
             if identifier['number'] > amplestRank:
                 typicalRank = identifier['identifier']
+                amplestRank = identifier['number']
     return typicalSuit, typicalRank
 
 
@@ -91,16 +94,13 @@ def uniqueIdentifiers(group):
         i += 1
     return uniques
 
-def printGroups(groups):
-    i = 0
-    for e in groups:
-        print("NEW GROUP: " + str(i))
-        for val in e:
-            print("SUIT: ")
-            print(val.getSuit())
-            print("RANK: ")
-            print(val.getRanks())
-            print("LOC: ")
-            print(val.getLoc())
-            print("\n")
-        i += 1
+def printGroup(group):
+    print("NEW GROUP: ")
+    for set in group:
+        print("SUIT: ")
+        print(set.getSuit())
+        print("RANK: ")
+        print(set.getRanks())
+        print("LOC: ")
+        print(set.getLoc())
+        print("\n")
