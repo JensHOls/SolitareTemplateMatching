@@ -1,7 +1,8 @@
 import testSets
 
 # prints missing positives and false positives of cards for a given test and corresponding cardset
-def findErrors(testImage, cardsDetected):
+def findErrors(testImage, cardsDetected, identityList = False):
+    cardlist = list()
     if testImage == 'test6.png':
         cards = testSets.t6
     elif testImage == 'test13.png':
@@ -18,11 +19,13 @@ def findErrors(testImage, cardsDetected):
         cards = testSets.t12
     else:
         cards = []
-
+    if identityList:
+        for identity in cardsDetected:
+            cardlist.append(identity.getRank() + ' ' + identity.getSuit())
     print(testImage)
     print('\ncards found not in list:')
     falseIdentify = 0
-    for cardF in cardsDetected:
+    for cardF in cardlist:
         found = False
         for card in cards:
             if cardF == card:
@@ -35,7 +38,7 @@ def findErrors(testImage, cardsDetected):
     print('\ncards missed in list:')
     for card in cards:
         found = False
-        for cardF in cardsDetected:
+        for cardF in cardlist:
             if card == cardF:
                 found = True
         if not found:
