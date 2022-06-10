@@ -1,6 +1,7 @@
 # project is modified code from: https://github.com/naderchehab/card-detector
 import sys
 import cv2
+import layoutMatches
 import numpy as np
 import os.path as path
 import imageModification
@@ -97,7 +98,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allValueMatches = allValueMatches + valueMatches
 
             allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
-
+    list = layoutMatches.divideIntoColumns(allMatches, backsideMatches)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, cardsDetected)
         if show:

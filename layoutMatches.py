@@ -88,9 +88,22 @@ def divideIntoColumns(allMatches, backsideMatches):
                 columnMatchesRows[index].append(match)
         prev_x = current_x
 
-    print (backsideMatches, )
     # now we combine the two lists of lists
-    combinedList = []
+    combinedList = [[], [], [], [], [], []]
+
+    index = 0
+    for columnList in columnMatchesRows:
+        if len(columnList) != 0:
+            for backsideList in backsideMatchesRows:
+                if len(backsideList) != 0:
+                    difference = backsideList[0]['topLeft'][0]-columnList[0]['suitTopLeft'][0]
+                    if difference < 107 and difference > 0:
+                        for backsideMatch in backsideList:
+                            combinedList[index].append(backsideMatch)
+            for columnMatch in columnList:
+                combinedList[index].append(columnMatch)
+            index = index + 1
+
     return combinedList
 
 # remove duplicates and false positives now (out of scope for this branch)
