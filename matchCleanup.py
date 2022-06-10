@@ -46,7 +46,7 @@ def groupByLoc(sets):
 
 # finds most common suit and rank in group
 def typicalIdentifiers(group):
-    # printGroup(group)
+    printGroup(group)
     uniqueSuitsNRanks = uniqueIdentifiers(group)
     individualRanksNSuits = concatenateIdentifiers(group)
     # map each unique rank and suit found in set with their number

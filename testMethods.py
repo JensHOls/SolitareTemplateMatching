@@ -17,6 +17,8 @@ def findErrors(testImage, cardsDetected, identityList = False):
         cards = testSets.t3
     elif testImage == 'test12.png':
         cards = testSets.t12
+    elif testImage == 'test4.png':
+        cards = testSets.t4
     else:
         cards = []
     if identityList:
