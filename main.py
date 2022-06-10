@@ -76,22 +76,22 @@ def groupByLoc(sets):
     # holds all subgroups
     groups = list()
 
-    for set in sets:
+    for leadSet in sets:
         # only make subgroups for sets that aren't in a subgroup yet
-        if not set.hasSubGroup():
+        if not leadSet.hasSubGroup():
             subGroup = list()
-            subGroup.append(set)
-            # declare set to be part of a subgroup
-            set.subGrouped = True
+            subGroup.append(leadSet)
+            # declare leadSet to be part of a subgroup
+            leadSet.subGrouped = True
             # look through all sets
-            for pair in sets:
-                if not pair.hasSubGroup():
-                    # add the sets within boundry of set leader to subgroup
-                    if abs(pair.getLoc()[0] - set.getLoc()[0]) <= boundry[0] and abs(
-                            pair.getLoc()[1] - set.getLoc()[1]) <= boundry[1]:
-                        subGroup.append(pair)
-                        # declare set to be part of a subgroup
-                        pair.subGrouped = True
+            for set in sets:
+                if not set.hasSubGroup():
+                    # add the sets within boundry of leadSet leader to subgroup
+                    if abs(set.getLoc()[0] - leadSet.getLoc()[0]) <= boundry[0] and abs(
+                            set.getLoc()[1] - leadSet.getLoc()[1]) <= boundry[1]:
+                        subGroup.append(set)
+                        # declare leadSet to be part of a subgroup
+                        set.subGrouped = True
             groups.append(subGroup)
     # i = 0
     # for minorGroup in groups:
