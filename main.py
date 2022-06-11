@@ -3,6 +3,7 @@ import sys
 import cv2
 import numpy as np
 import os.path as path
+from numpy import cos, sin
 import imageModification
 import templateMatching
 import screen
@@ -21,13 +22,13 @@ from matchCleanup import concentrateMatches
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test4.png']
+testImages = ['test2.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.80]
 # range of rotation to be applied to source image
 rotations = [-3, -6, 3, 6, 0]
-# rotations = [0]
+rotations = [0]
 
 # dimensions of image
 dimensions = [4032, 3024]
@@ -49,10 +50,6 @@ for suit in suits:
 
 backsideTemplate = getImage("backside", True)
 
-
-valuesDict = {}
-for value in values:
-    valuesDict[value] = getImage(value, True)
 ranksDict = {}
 for rank in ranks:
     ranksDict[rank] = getImage(rank, True)
@@ -92,7 +89,11 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         areaToScan = image[areaToScanTopLeft[1]:areaToScanBottomRight[1], areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
         backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
-        backsideMatches = map(lambda match: {'topLeft': match, 'name': 'backside'}, backsideMatches)
+        backsideMatches = map(lambda match: {'actualLoc': match, 'name': 'backside'}, backsideMatches)
+        for match in backsideMatches:
+            result = rotationBacktrack(match['actualLoc'], rotation)
+            match['actualLoc'] = (result[0], result[1])
+
         for suit in suitsDict:
             suitTemplate = suitsDict[suit]
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
@@ -148,14 +149,15 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
-            allMatches = allMatches + suitMatches + allRankMatches
+            # allMatches = allMatches + suitMatches + allRankMatches
 
-                    allValueMatches = allValueMatches + valueMatches
 
-            allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
+            allMatches = allMatches + suitMatches + allRankMatches + backsideMatches
+
+        allMatches = allMatches + backsideMatches
+
 
     finalList = concentrateMatches(allMatchSets)
-
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
