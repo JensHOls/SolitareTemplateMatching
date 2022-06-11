@@ -20,7 +20,7 @@ from imageModification import addPadding
 # when True displays image with detected areas
 from matchCleanup import concentrateMatches
 
-show = True
+show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
 
@@ -149,15 +149,20 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
-            # allMatches = allMatches + suitMatches + allRankMatches
+            allMatches = allMatches + suitMatches + allRankMatches
 
+        if (len(backsideMatches) > 0):
+            allMatches += backsideMatches
 
-            allMatches = allMatches + suitMatches + allRankMatches + backsideMatches
+            for match in backsideMatches:
+                backsideObj = MatchCombination(match)
+                allMatchSets.append(backsideObj)
 
         allMatches = allMatches + backsideMatches
 
-
     finalList = concentrateMatches(allMatchSets)
+    # for e in finalList:
+    #     print(e.getName() + "HA")
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)

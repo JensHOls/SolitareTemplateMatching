@@ -1,19 +1,15 @@
 class Identity:
     coord = [0, 0]
-    suit = ''
-    rank = ''
+    name = ""
 
-    def __init__(self, suit, rank, loc):
-        self.suit = suit
-        self.ranks = rank
+
+    def __init__(self, name, loc):
+        self.name = name
         self.coord = loc
         pass
 
-    def getSuit(self):
-        return self.suit
-
-    def getRank(self):
-        return self.ranks
+    def getName(self):
+        return self.name
 
     def getCoord(self):
         return self.coord

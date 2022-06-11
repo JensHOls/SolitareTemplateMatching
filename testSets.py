@@ -73,3 +73,4 @@ t13 = [hq,dk,dj,c10,s7,hk,ha,c3,h5,h2,d6,dq,ck,h3,d5,s5,da,h9,s8,c6,cq]
 
 suits = ['spade', 'heart', 'club', 'diamond']
 values = ['ace', 'king', 'queen', 'jack', 'ten', 'nine', 'eight', 'seven', 'six', 'five', 'four', 'three', 'two']
+

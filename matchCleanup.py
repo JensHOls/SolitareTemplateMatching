@@ -4,15 +4,20 @@ from testSets import suits
 
 
 def concentrateMatches(sets):
+
     groups = groupByLoc(sets)
+
     identityList = list()
     for group in groups:
         # get most common rank in group
-        identifiers = typicalIdentifiers(group)
+
+        name = typicalIdentifiers(group)
+        # print(name + 'HA')
         # note: coord is the coordinates of the first set in group, should perhaps be more considerate of choosing coord
-        suit = identifiers[0]; rank = identifiers[1]; coord = group[0].getLoc()
-        identity = Identity(suit, rank, coord)
+        coord = group[0].getCoord()
+        identity = Identity(name, coord)
         identityList.append(identity)
+
     return identityList
 
 
@@ -29,14 +34,15 @@ def groupByLoc(sets):
         if not leadSet.hasSubGroup():
             subGroup = list()
             subGroup.append(leadSet)
+
             # declare leadSet to be part of a subgroup
             leadSet.subGrouped = True
             # look through all sets
             for set in sets:
                 if not set.hasSubGroup():
                     # add the sets within boundry of leadSet leader to subgroup
-                    if abs(set.getLoc()[0] - leadSet.getLoc()[0]) <= boundry[0] and abs(
-                            set.getLoc()[1] - leadSet.getLoc()[1]) <= boundry[1]:
+                    if abs(set.getCoord()[0] - leadSet.getCoord()[0]) <= boundry[0] and abs(
+                            set.getCoord()[1] - leadSet.getCoord()[1]) <= boundry[1]:
                         subGroup.append(set)
                         # declare leadSet to be part of a subgroup
                         set.subGrouped = True
@@ -46,24 +52,42 @@ def groupByLoc(sets):
 
 # finds most common suit and rank in group
 def typicalIdentifiers(group):
-    printGroup(group)
-    uniqueSuitsNRanks = uniqueIdentifiers(group)
-    individualRanksNSuits = concatenateIdentifiers(group)
-    # map each unique rank and suit found in set with their number
-    identifierCounts = map(lambda name: {'identifier': name, 'number': individualRanksNSuits.count(name)}, uniqueSuitsNRanks)
+    assmbledGroup = assembleGroup(group)
 
-    typicalSuit = ''; typicalRank = ''; amplestSuit = 0; amplestRank = 0
-    # find most common suit and rank by their number
-    for identifier in identifierCounts:
-        if suits.__contains__(identifier['identifier']):
-            if identifier['number'] > amplestSuit:
-                typicalSuit = identifier['identifier']
-                amplestSuit = identifier['number']
-        else:
-            if identifier['number'] > amplestRank:
-                typicalRank = identifier['identifier']
-                amplestRank = identifier['number']
-    return typicalSuit, typicalRank
+    if len(assmbledGroup[0].getRanks()) > 0:
+        uniqueSuitsAndRanks = uniqueIdentifiers(group)
+        individualRanksNSuits = concatenateIdentifiers(group)
+        # map each unique rank and suit found in set with their number
+        identifierCounts = map(lambda name: {'identifier': name, 'number': individualRanksNSuits.count(name)},
+                               uniqueSuitsAndRanks)
+        typicalSuit = ''; typicalRank = ''; amplestSuit = 0; amplestRank = 0
+        # find most common suit and rank by their number
+        for identifier in identifierCounts:
+            if suits.__contains__(identifier['identifier']):
+                if identifier['number'] > amplestSuit:
+                    typicalSuit = identifier['identifier']
+                    amplestSuit = identifier['number']
+            else:
+                if identifier['number'] > amplestRank:
+                    typicalRank = identifier['identifier']
+                    amplestRank = identifier['number']
+        name = typicalRank + ' ' + typicalSuit
+    else:
+        name = 'backside'
+    return name
+
+# returns group of only suit/rank sets unless the group contains none, else return group of only backside sets
+def assembleGroup(group):
+    suitRankGroup = list()
+    backsideGroup = list()
+    for set in group:
+        if len(set.getRanks()) > 0:
+            suitRankGroup.append(set)
+        else: backsideGroup.append(set)
+
+    if len(suitRankGroup) > 0:
+        return suitRankGroup
+    else: return backsideGroup
 
 
 # combines suit and rank names of a group in a single list
@@ -102,5 +126,5 @@ def printGroup(group):
         print("RANK: ")
         print(set.getRanks())
         print("LOC: ")
-        print(set.getLoc())
+        print(set.getCoord())
         print("\n")

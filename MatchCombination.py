@@ -1,15 +1,15 @@
 class MatchCombination:
-    loc = [0, 0]
+    coord = [0, 0]
     suit = ''
     ranks = []
     subGrouped = False
 
-    def __init__(self, suit, ranks):
+    def __init__(self, suit, ranks = []):
         self.suit = suit['name']
         self.ranks = list()
         for rank in ranks:
             self.ranks.append(rank['name'])
-        self.loc = suit['actualLoc']
+        self.coord = suit['actualLoc']
         pass
 
     def getSuit(self):
@@ -18,8 +18,8 @@ class MatchCombination:
     def getRanks(self):
         return self.ranks
 
-    def getLoc(self):
-        return self.loc
+    def getCoord(self):
+        return self.coord
 
     def hasSubGroup(self):
         return self.subGrouped
