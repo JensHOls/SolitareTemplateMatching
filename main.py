@@ -3,7 +3,6 @@ import sys
 import cv2
 import numpy as np
 import os.path as path
-from numpy import cos, sin
 import imageModification
 import templateMatching
 import screen
@@ -35,7 +34,6 @@ dimensions = [4032, 3024]
 # it's faster to scan a smaller area rather than the whole screen
 areaToScanTopLeft = (0L, 0L)
 areaToScanBottomRight = (4032L, 3024L)
-
 # things we're looking for
 suits = testSets.suits
 ranks = testSets.values
@@ -49,6 +47,12 @@ suitsDict = {}
 for suit in suits:
     suitsDict[suit] = getImage(suit, True)
 
+backsideTemplate = getImage("backside", True)
+
+
+valuesDict = {}
+for value in values:
+    valuesDict[value] = getImage(value, True)
 ranksDict = {}
 for rank in ranks:
     ranksDict[rank] = getImage(rank, True)
@@ -87,6 +91,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         image = imageModification.rotate(image, rotation)
         areaToScan = image[areaToScanTopLeft[1]:areaToScanBottomRight[1], areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
+        backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
+        backsideMatches = map(lambda match: {'topLeft': match, 'name': 'backside'}, backsideMatches)
         for suit in suitsDict:
             suitTemplate = suitsDict[suit]
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
@@ -143,6 +149,10 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
             allMatches = allMatches + suitMatches + allRankMatches
+
+                    allValueMatches = allValueMatches + valueMatches
+
+            allMatches = allMatches + suitMatches + allValueMatches + backsideMatches
 
     finalList = concentrateMatches(allMatchSets)
 
