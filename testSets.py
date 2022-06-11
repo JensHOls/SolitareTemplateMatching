@@ -55,7 +55,7 @@ sk = 'king spade'
 sa = 'ace spade'
 
 # list of cards in testSets for comparing matching accuracy
-t2 = [dj,hj,s2,h8,s9,c9,h6,s6,c2,h2,ck,d3,d2,c3,h10,dq,ca,s10]
+t2 = [dj,hj,s2,h8,s9,c9,h6,s6,c2,h2,ck,d3,d2,c3,h10,dq,ca,s10, 14]
 
 t3 = [c4,d8,d6,d10,c5,c9,cj,d9,sq,d5,ck,d3,d2,c10,h2,cq,h6,s6,c2,c3,h10,h3,dq,ca,da,c7,sj,s4,s10,hk]
 

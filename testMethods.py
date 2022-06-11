@@ -3,7 +3,9 @@ import testSets
 # prints missing positives and false positives of cards for a given test and corresponding cardset
 def findErrors(image, cardsDetected, identityList = False):
     cardsFoundList = list()
-    cards = getCardsInImage(image)
+    cardData = getCardsInImage(image)
+    backsideNumber = cardData[0]
+    cards = cardData[1]
 
     backsideCount = 0
     if identityList:
@@ -28,8 +30,10 @@ def findErrors(image, cardsDetected, identityList = False):
             print(card)
             nMissing += 1
 
+
     cardsFound = len(cards) - nMissing
-    print('\ncorrectly identified:\n' + str(cardsFound) + '/' + str(len(cards)))
+    print('\nfront cards correctly identified:\n' + str(cardsFound) + '/' + str(len(cards)))
+    print('backside cards found out of total. \n' + str(backsideCount) + '/' + str(backsideNumber))
     print('\n-----------------------------------')
 
 
@@ -53,4 +57,4 @@ def getCardsInImage(image):
         cards = testSets.t4
     else:
         cards = []
-    return cards
+    return cards.pop(len(cards) - 1), cards
