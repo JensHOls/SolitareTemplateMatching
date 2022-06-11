@@ -118,6 +118,7 @@ def uniqueIdentifiers(group):
         i += 1
     return uniques
 
+# testing method for supplying transparency for data in groups
 def printGroup(group):
     print("NEW GROUP: ")
     for set in group:
