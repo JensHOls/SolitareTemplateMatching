@@ -40,8 +40,8 @@ def divideIntoColumns(allMatches, backsideMatches):
     backsideMatches = sorted(backsideMatches, key=lambda match: match['topLeft'][0])
 
     # list with 7 lists in order to seperate column
-    columnMatchesRows = [[], [], [], [], [], []]
-    backsideMatchesRows = [[], [], [], [], [], []]
+    columnMatchesRows = [[], [], [], [], [], [],[]]
+    backsideMatchesRows = [[], [], [], [], [], [],[]]
 
     index = 0
     prev_x = 0
@@ -89,7 +89,7 @@ def divideIntoColumns(allMatches, backsideMatches):
         prev_x = current_x
 
     # now we combine the two lists of lists
-    combinedList = [[], [], [], [], [], []]
+    combinedList = [[], [], [], [], [], [],[]]
 
     index = 0
     for columnList in columnMatchesRows:
