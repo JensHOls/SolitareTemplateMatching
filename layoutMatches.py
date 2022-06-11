@@ -71,39 +71,41 @@ def divideIntoColumns(allMatches, backsideMatches):
         current_x = match['suitTopLeft'][0]
         difference = current_x - prev_x
         # the first value
-        if prev_x == 0:
-            prev_x = current_x
-            columnMatchesRows[index].append(match)
-            continue
-        # for same row
-        if difference < 10:
-            columnMatchesRows[index].append(match)
-        # for jumping to right side
-        if difference < 227 and current_x - prev_x > 187:
-            columnMatchesRows[index].append(match)
-        # for new row
-        if difference > 10:
-            if difference > 237 or difference < 187:
-                index = index + 1
+        if index <= 6:
+            if prev_x == 0:
+                prev_x = current_x
                 columnMatchesRows[index].append(match)
-        prev_x = current_x
+                continue
+            # for same row
+            if difference < 10:
+                columnMatchesRows[index].append(match)
+            # for jumping to right side
+            if difference < 227 and current_x - prev_x > 187:
+                columnMatchesRows[index].append(match)
+            # for new row
+            if difference > 10:
+                if difference > 237 or difference < 187:
+                    index = index + 1
+                    if index <= 6:
+                        columnMatchesRows[index].append(match)
+            prev_x = current_x
 
     # now we combine the two lists of lists
     combinedList = [[], [], [], [], [], [],[]]
 
     index = 0
     for columnList in columnMatchesRows:
-        if len(columnList) != 0:
-            for backsideList in backsideMatchesRows:
-                if len(backsideList) != 0:
-                    difference = backsideList[0]['topLeft'][0]-columnList[0]['suitTopLeft'][0]
-                    if difference < 107 and difference > 0:
-                        for backsideMatch in backsideList:
-                            combinedList[index].append(backsideMatch)
-            for columnMatch in columnList:
-                combinedList[index].append(columnMatch)
-            index = index + 1
-
+        if index <= 6:
+            if len(columnList) != 0:
+                for backsideList in backsideMatchesRows:
+                    if len(backsideList) != 0:
+                        difference = backsideList[0]['topLeft'][0]-columnList[0]['suitTopLeft'][0]
+                        if difference < 107 and difference > 0:
+                            for backsideMatch in backsideList:
+                                combinedList[index].append(backsideMatch)
+                for columnMatch in columnList:
+                    combinedList[index].append(columnMatch)
+                index = index + 1
     return combinedList
 
 # remove duplicates and false positives now (out of scope for this branch)
