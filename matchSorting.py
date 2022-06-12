@@ -20,6 +20,8 @@ def concentrateMatches(allSets):
         identityList.append(identity)
 
 
+
+
     for singleGroup in singlesList:
         name = typicalIdentifiers(singleGroup)
         if name != 'backside':
@@ -224,18 +226,59 @@ def averageCoord(groups):
 
 
 # group 4
-# finds the average x axis distance between neighbour columns
-def distanceToNeighbourColumn(cards):
+# finds the average x axis distance between neighbouring columns
+def averageDistanceToNeighbourColumn(cards):
+    dividedCards = divideTopcardsAndBottomCards(cards)
+    allDistances = list()
+    totalDistance = 0
+
+    for cardList in dividedCards:
+        for card in cardList:
+            allDistances += distanceToNeighbourColumn(cardList, card)
+
+    for distance in allDistances:
+        totalDistance += distance
+
+    avgDistance = totalDistance/len(allDistances)
+    return avgDistance
+
+
+
+# divide cards between talon + foundations and columns
+def divideTopcardsAndBottomCards(cards):
     # HARDCODED value that splits foundations and talons with columns
     maxY = 900
+    topcards = list()
+    bottomcards = list()
+    for card in cards:
+        if card.getCoord()[1] < maxY:
+            topcards.append(card)
+        else:
+            bottomcards.append(card)
+    return [topcards, bottomcards]
+
+# finds distance x axis distance to neighbour columns in any exist
+def distanceToNeighbourColumn(cards, selectedCard):
+    # HARDCODED max and min x axis distance between a column and it's neighbour column
+    maxX = 450
+    minX = 200
+    distances = list()
+    cards.remove(selectedCard)
+    for card in cards:
+        distance = abs(selectedCard.getCoord()[0] - card.getCoord()[0])
+        if minX < distance < maxX:
+            distances.append(distance)
+    return distances
 
 
-def findNeighbourColumn(cards):
 
 
 
 
-# grouo 5
+
+
+
+# group 5
 # testing method for supplying transparency for data in groups
 def printGroup(group):
     print("NEW GROUP: ")
