@@ -23,8 +23,8 @@ def concentrateMatches(allSets):
     for singleGroup in singlesList:
         name = typicalIdentifiers(singleGroup)
         coord = averageCoord(singleGroup)
-        print(name)
-        print(coord)
+        # print(name)
+        # print(coord)
         identity = Identity(name, coord)
         if name != 'backside':
             side = isMatchRightOrLeft(identityList, identity, columnDistance)
@@ -35,7 +35,9 @@ def concentrateMatches(allSets):
     identityList += templist
 
     for identity in identityList:
-        identity.printMe()
+        if identity.getName() == 'king diamond' or identity.getName() == 'queen club' or identity.getName() == 'five diamond':
+            print("\n")
+            identity.printMe()
 
     return identityList
 
@@ -241,7 +243,7 @@ def distanceToNeighbourColumn(cards, selectedCard):
         if minX < distance < maxX:
             distances.append(distance)
     return distances
-
+# BUGGED: the logic behind whether the card is right or left is flawed, it itself depends on whether it is right or left
 # returns (probably) whether match is on the left or right side of card
 def isMatchRightOrLeft(cards, match, columnDistance):
     # HARDCODED value that splits foundations and talons with columns
@@ -257,7 +259,9 @@ def isMatchRightOrLeft(cards, match, columnDistance):
             xdifference = abs(card.getCoord()[0] - xval)
             if shortestDistance > xdifference > minX:
                 shortestDistance = xdifference
-
+    print("\n")
+    match.printMe()
+    print("shortest distance " + str(shortestDistance))
     width = shortestDistance % columnDistance
     if width > columnDistance/2:
         return 'left'
