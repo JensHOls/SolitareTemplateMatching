@@ -14,5 +14,9 @@ class Identity:
     def getCoord(self):
         return self.coord
 
-
+    def printMe(self):
+        print("NAME: ")
+        print(self.name)
+        print("COORDS: ")
+        print(self.coord)
 

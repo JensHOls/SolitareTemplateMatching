@@ -3,28 +3,37 @@ from Identity import Identity
 from testSets import suits
 
 
+# group 1
 def concentrateMatches(allSets):
-
     allGroups = groupByLoc(allSets)
     categories = divideTwinsAndSingles(allGroups)
-    printTwinsAndSingles(categories)
+    # printTwinsAndSingles(categories)
     twinsList = categories[0]
-    singles = categories[1]
-
-
-
-
-
-
+    singlesList = categories[1]
     identityList = list()
-    for group in allGroups:
-        # get most common rank in group
-
-        name = typicalIdentifiers(group)
-        # note: coord is the coordinates of the first set in group, should perhaps be more considerate of choosing coord
-        coord = group[0].getCoord()
+    # printTwinsAndSingles(twinsList)
+    # identityList.
+    for twinGroup in twinsList:
+        name = typicalIdentifiers(twinGroup[0] + twinGroup[1])
+        coord = averageCoord(twinGroup)
         identity = Identity(name, coord)
         identityList.append(identity)
+
+
+    for singleGroup in singlesList:
+        name = typicalIdentifiers(singleGroup)
+        if name != 'backside':
+            x = 5
+
+    # identityList = list()
+    # for group in allGroups:
+    #     # get most common rank in group
+    #
+    #     name = typicalIdentifiers(group)
+    #     # note: coord is the coordinates of the first set in group, should perhaps be more considerate of choosing coord
+    #     coord = group[0].getCoord()
+    #     identity = Identity(name, coord)
+    #     identityList.append(identity)
 
     return identityList
 
@@ -59,17 +68,21 @@ def groupByLoc(allSets):
     return allGroups
 
 
-# finds most common suit and rank in group
-def typicalIdentifiers(group):
-    assmbledGroup = assembleGroup(group)
+# group 2
+# finds most common suit and rank in groups
+def typicalIdentifiers(groups):
+    assmbledGroup = assembleGroup(groups)
 
     if len(assmbledGroup[0].getRanks()) > 0:
-        uniqueSuitsAndRanks = uniqueIdentifiers(group)
-        individualRanksNSuits = concatenateIdentifiers(group)
+        uniqueSuitsAndRanks = uniqueIdentifiers(groups)
+        individualRanksNSuits = concatenateIdentifiers(groups)
         # map each unique rank and suit found in set with their number
         identifierCounts = map(lambda name: {'identifier': name, 'number': individualRanksNSuits.count(name)},
                                uniqueSuitsAndRanks)
-        typicalSuit = ''; typicalRank = ''; amplestSuit = 0; amplestRank = 0
+        typicalSuit = '';
+        typicalRank = '';
+        amplestSuit = 0;
+        amplestRank = 0
         # find most common suit and rank by their number
         for identifier in identifierCounts:
             if suits.__contains__(identifier['identifier']):
@@ -85,18 +98,21 @@ def typicalIdentifiers(group):
         name = 'backside'
     return name
 
-# returns group of only suit/rank sets unless the group contains none, else return group of only backside sets
+
+# returns group of only suit/rank sets, unless the group contains none then return group of only backside sets
 def assembleGroup(group):
     suitRankGroup = list()
     backsideGroup = list()
     for set in group:
         if len(set.getRanks()) > 0:
             suitRankGroup.append(set)
-        else: backsideGroup.append(set)
+        else:
+            backsideGroup.append(set)
 
     if len(suitRankGroup) > 0:
         return suitRankGroup
-    else: return backsideGroup
+    else:
+        return backsideGroup
 
 
 # combines suit and rank names of a group in a single list
@@ -111,6 +127,7 @@ def concatenateIdentifiers(group):
             suitRankList.append(rank)
         i += 1
     return suitRankList
+
 
 # finds unique suits and ranks
 def uniqueIdentifiers(group):
@@ -128,6 +145,7 @@ def uniqueIdentifiers(group):
     return uniques
 
 
+# group 3
 # divides given groups into two categories, those that have a twin suit/rank and singles that don't
 def divideTwinsAndSingles(allGroups):
     twins = list()
@@ -155,23 +173,69 @@ def findTwin(allGroups, selectedGroup):
         yDistance = abs(coord[1] - selectedGroupCoord[1])
         if twinDistanceX[0] <= xDistance <= twinDistanceX[1] and yDistance < twinDistanceY:
             return group
-    else: return None
-
-
+    else:
+        return None
 
 
 # finds the average coordinates within a group
-def averageCoord(group):
+def averageCoord(groups):
     combiendCoord = [0, 0]
-    for set in group:
-        combiendCoord[0] += set.getCoord()[0]
-        combiendCoord[1] += set.getCoord()[1]
-    averageX = combiendCoord[0]/len(group)
-    averageY = combiendCoord[1]/len(group)
+    divider = 0
+    for group in groups:
+        try:
+            for set in group:
+                combiendCoord[0] += set.getCoord()[0]
+                combiendCoord[1] += set.getCoord()[1]
+                divider += 1
+        except:
+            combiendCoord[0] += group.getCoord()[0]
+            combiendCoord[1] += group.getCoord()[1]
+            divider += 1
+
+
+
+
+    # for group in groups:
+    #     print(type(group))
+    #     if not isinstance(type(group), list):
+    #         combiendCoord[0] += group.getCoord()[0]
+    #         combiendCoord[1] += group.getCoord()[1]
+    #         divider += 1
+    #     else:
+    #         for set in group:
+    #             combiendCoord[0] += set.getCoord()[0]
+    #             combiendCoord[1] += set.getCoord()[1]
+    #             divider += 1
+
+
+        # if not isinstance(type(group), type(list)):
+        #     combiendCoord[0] += group.getCoord()[0]
+        #     combiendCoord[1] += group.getCoord()[1]
+        #     divider += 1
+        # else:
+        #     for set in group:
+        #         combiendCoord[0] += set.getCoord()[0]
+        #         combiendCoord[1] += set.getCoord()[1]
+        #         divider += 1
+
+    averageX = combiendCoord[0] / divider
+    averageY = combiendCoord[1] / divider
     return (averageX, averageY)
 
 
+# group 4
+# finds the average x axis distance between neighbour columns
+def distanceToNeighbourColumn(cards):
+    # HARDCODED value that splits foundations and talons with columns
+    maxY = 900
 
+
+def findNeighbourColumn(cards):
+
+
+
+
+# grouo 5
 # testing method for supplying transparency for data in groups
 def printGroup(group):
     print("NEW GROUP: ")
