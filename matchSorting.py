@@ -5,37 +5,35 @@ from testSets import suits
 
 # group 1
 def concentrateMatches(allSets):
+    # HARDCODED width between right and left side of cards
+    cardwidth = 209
     allGroups = groupByLoc(allSets)
     categories = divideTwinsAndSingles(allGroups)
-    # printTwinsAndSingles(categories)
     twinsList = categories[0]
     singlesList = categories[1]
     identityList = list()
-    # printTwinsAndSingles(twinsList)
-    # identityList.
     for twinGroup in twinsList:
         name = typicalIdentifiers(twinGroup[0] + twinGroup[1])
         coord = averageCoord(twinGroup)
         identity = Identity(name, coord)
         identityList.append(identity)
 
-
-
-
+    columnDistance = averageDistanceToNeighbourColumn(identityList)
+    templist = list()
     for singleGroup in singlesList:
         name = typicalIdentifiers(singleGroup)
+        coord = averageCoord(singleGroup)
+        identity = Identity(name, coord)
         if name != 'backside':
-            x = 5
+            side = isMatchRightOrLeft(identityList, identity, columnDistance)
+            if side == 'left':
+                coord = coord[0] + cardwidth/2
+            else: coord = coord[0] - cardwidth/2
+        templist.append(Identity(name, coord))
+    identityList += templist
 
-    # identityList = list()
-    # for group in allGroups:
-    #     # get most common rank in group
-    #
-    #     name = typicalIdentifiers(group)
-    #     # note: coord is the coordinates of the first set in group, should perhaps be more considerate of choosing coord
-    #     coord = group[0].getCoord()
-    #     identity = Identity(name, coord)
-    #     identityList.append(identity)
+    for identity in identityList:
+        identity.printMe()
 
     return identityList
 
@@ -164,7 +162,7 @@ def divideTwinsAndSingles(allGroups):
 
 # finds the twin of 'group' if it doesn't exist return None
 def findTwin(allGroups, selectedGroup):
-    # width between right and left side of cards, note: HARDCODED FOR NOW, SHOULD BE UPDATED
+    # range for width between right and left side of cards, note: HARDCODED FOR NOW, SHOULD BE UPDATED
     twinDistanceX = (195, 240)
     twinDistanceY = 20
 
@@ -193,32 +191,6 @@ def averageCoord(groups):
             combiendCoord[0] += group.getCoord()[0]
             combiendCoord[1] += group.getCoord()[1]
             divider += 1
-
-
-
-
-    # for group in groups:
-    #     print(type(group))
-    #     if not isinstance(type(group), list):
-    #         combiendCoord[0] += group.getCoord()[0]
-    #         combiendCoord[1] += group.getCoord()[1]
-    #         divider += 1
-    #     else:
-    #         for set in group:
-    #             combiendCoord[0] += set.getCoord()[0]
-    #             combiendCoord[1] += set.getCoord()[1]
-    #             divider += 1
-
-
-        # if not isinstance(type(group), type(list)):
-        #     combiendCoord[0] += group.getCoord()[0]
-        #     combiendCoord[1] += group.getCoord()[1]
-        #     divider += 1
-        # else:
-        #     for set in group:
-        #         combiendCoord[0] += set.getCoord()[0]
-        #         combiendCoord[1] += set.getCoord()[1]
-        #         divider += 1
 
     averageX = combiendCoord[0] / divider
     averageY = combiendCoord[1] / divider
@@ -270,13 +242,26 @@ def distanceToNeighbourColumn(cards, selectedCard):
             distances.append(distance)
     return distances
 
+# returns (probably) whether match is on the left or right side of card
+def isMatchRightOrLeft(cards, match, columnDistance):
+    # HARDCODED value that splits foundations and talons with columns
+    maxY = 900
+    # HARDCODED value to prevent neighbour column matches in own matches column
+    minX = 200
+    shortestDistance = 5000
+    cards[0].getCoord()
 
+    xval = match.getCoord()[0]
+    for card in cards:
+        if card.getCoord()[1] > maxY:
+            xdifference = abs(card.getCoord()[0] - xval)
+            if shortestDistance > xdifference > minX:
+                shortestDistance = xdifference
 
-
-
-
-
-
+    width = shortestDistance % columnDistance
+    if width > columnDistance/2:
+        return 'left'
+    else: return 'right'
 
 # group 5
 # testing method for supplying transparency for data in groups
