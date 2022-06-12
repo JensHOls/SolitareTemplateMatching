@@ -142,35 +142,6 @@ def divideTwinsAndSingles(allGroups):
     return twins, singles
 
 
-# testing method for supplying transparency for data in groups
-def printGroup(group):
-    print("NEW GROUP: ")
-    for set in group:
-        print("SUIT: ")
-        print(set.getSuit())
-        print("RANK: ")
-        print(set.getRanks())
-        print("LOC: ")
-        print(set.getCoord())
-        print("\n")
-
-
-def printTwinsAndSingles(categories):
-    twinsList = categories[0]
-    singles = categories[1]
-    for twins in twinsList:
-        print("------------------------------\nTWIN GROUP PAIR")
-        for e in twins:
-            print("SEPARATE TWIN GROUP")
-            for twin in e:
-                twin.printMe()
-    for single in singles:
-        for e in single:
-            e.printMe()
-    print("\nsingles list length " + str(len(twinsList)))
-    print("twin list length " + str(len(singles)) + "\n")
-
-
 # finds the twin of 'group' if it doesn't exist return None
 def findTwin(allGroups, selectedGroup):
     # width between right and left side of cards, note: HARDCODED FOR NOW, SHOULD BE UPDATED
@@ -199,3 +170,32 @@ def averageCoord(group):
     averageY = combiendCoord[1]/len(group)
     return (averageX, averageY)
 
+
+
+# testing method for supplying transparency for data in groups
+def printGroup(group):
+    print("NEW GROUP: ")
+    for set in group:
+        print("SUIT: ")
+        print(set.getSuit())
+        print("RANK: ")
+        print(set.getRanks())
+        print("LOC: ")
+        print(set.getCoord())
+        print("\n")
+
+
+def printTwinsAndSingles(categories):
+    twinsList = categories[0]
+    singles = categories[1]
+    for twins in twinsList:
+        print("------------------------------\nTWIN GROUP PAIR")
+        for e in twins:
+            print("SEPARATE TWIN GROUP")
+            for twin in e:
+                twin.printMe()
+    for single in singles:
+        for e in single:
+            e.printMe()
+    print("\nsingles list length " + str(len(twinsList)))
+    print("twin list length " + str(len(singles)) + "\n")
