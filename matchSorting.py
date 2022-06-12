@@ -3,16 +3,24 @@ from Identity import Identity
 from testSets import suits
 
 
-def concentrateMatches(sets):
+def concentrateMatches(allSets):
 
-    groups = groupByLoc(sets)
+    allGroups = groupByLoc(allSets)
+    categories = divideTwinsAndSingles(allGroups)
+    printTwinsAndSingles(categories)
+    twinsList = categories[0]
+    singles = categories[1]
+
+
+
+
+
 
     identityList = list()
-    for group in groups:
+    for group in allGroups:
         # get most common rank in group
 
         name = typicalIdentifiers(group)
-        # print(name + 'HA')
         # note: coord is the coordinates of the first set in group, should perhaps be more considerate of choosing coord
         coord = group[0].getCoord()
         identity = Identity(name, coord)
@@ -23,13 +31,14 @@ def concentrateMatches(sets):
 
 # TOD0: Fix issue described in note
 # note: I'm working off the assumption that one set will fit into only one subgroup
-def groupByLoc(sets):
-    # x,y values for which two matches in reach of each other are put into a subgroup
+# groups sets together by their location such that a single group is the matches for a single identifier ex (heart 4)
+def groupByLoc(allSets):
+    # x,y values for which two matches in reach of each other are put into a group
     boundry = [25, 25]
     # holds all subgroups
-    groups = list()
+    allGroups = list()
 
-    for leadSet in sets:
+    for leadSet in allSets:
         # only make subgroups for sets that aren't in a subgroup yet
         if not leadSet.hasSubGroup():
             subGroup = list()
@@ -38,7 +47,7 @@ def groupByLoc(sets):
             # declare leadSet to be part of a subgroup
             leadSet.subGrouped = True
             # look through all sets
-            for set in sets:
+            for set in allSets:
                 if not set.hasSubGroup():
                     # add the sets within boundry of leadSet leader to subgroup
                     if abs(set.getCoord()[0] - leadSet.getCoord()[0]) <= boundry[0] and abs(
@@ -46,8 +55,8 @@ def groupByLoc(sets):
                         subGroup.append(set)
                         # declare leadSet to be part of a subgroup
                         set.subGrouped = True
-            groups.append(subGroup)
-    return groups
+            allGroups.append(subGroup)
+    return allGroups
 
 
 # finds most common suit and rank in group
@@ -118,6 +127,21 @@ def uniqueIdentifiers(group):
         i += 1
     return uniques
 
+
+# divides given groups into two categories, those that have a twin suit/rank and singles that don't
+def divideTwinsAndSingles(allGroups):
+    twins = list()
+    singles = list()
+    for group in allGroups:
+        twin = findTwin(allGroups, group)
+        if twin is None:
+            singles.append(group)
+        else:
+            twins.append([group, twin])
+            allGroups.remove(twin)
+    return twins, singles
+
+
 # testing method for supplying transparency for data in groups
 def printGroup(group):
     print("NEW GROUP: ")
@@ -129,3 +153,49 @@ def printGroup(group):
         print("LOC: ")
         print(set.getCoord())
         print("\n")
+
+
+def printTwinsAndSingles(categories):
+    twinsList = categories[0]
+    singles = categories[1]
+    for twins in twinsList:
+        print("------------------------------\nTWIN GROUP PAIR")
+        for e in twins:
+            print("SEPARATE TWIN GROUP")
+            for twin in e:
+                twin.printMe()
+    for single in singles:
+        for e in single:
+            e.printMe()
+    print("\nsingles list length " + str(len(twinsList)))
+    print("twin list length " + str(len(singles)) + "\n")
+
+
+# finds the twin of 'group' if it doesn't exist return None
+def findTwin(allGroups, selectedGroup):
+    # width between right and left side of cards, note: HARDCODED FOR NOW, SHOULD BE UPDATED
+    twinDistanceX = (195, 240)
+    twinDistanceY = 20
+
+    selectedGroupCoord = averageCoord(selectedGroup)
+    for group in allGroups:
+        coord = averageCoord(group)
+        xDistance = abs(coord[0] - selectedGroupCoord[0])
+        yDistance = abs(coord[1] - selectedGroupCoord[1])
+        if twinDistanceX[0] <= xDistance <= twinDistanceX[1] and yDistance < twinDistanceY:
+            return group
+    else: return None
+
+
+
+
+# finds the average coordinates within a group
+def averageCoord(group):
+    combiendCoord = [0, 0]
+    for set in group:
+        combiendCoord[0] += set.getCoord()[0]
+        combiendCoord[1] += set.getCoord()[1]
+    averageX = combiendCoord[0]/len(group)
+    averageY = combiendCoord[1]/len(group)
+    return (averageX, averageY)
+
