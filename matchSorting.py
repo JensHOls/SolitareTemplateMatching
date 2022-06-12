@@ -23,12 +23,14 @@ def concentrateMatches(allSets):
     for singleGroup in singlesList:
         name = typicalIdentifiers(singleGroup)
         coord = averageCoord(singleGroup)
+        print(name)
+        print(coord)
         identity = Identity(name, coord)
         if name != 'backside':
             side = isMatchRightOrLeft(identityList, identity, columnDistance)
             if side == 'left':
-                coord = coord[0] + cardwidth/2
-            else: coord = coord[0] - cardwidth/2
+                coord[0] = coord[0] + cardwidth/2
+            else: coord[0] = coord[0] - cardwidth/2
         templist.append(Identity(name, coord))
     identityList += templist
 
@@ -79,10 +81,7 @@ def typicalIdentifiers(groups):
         # map each unique rank and suit found in set with their number
         identifierCounts = map(lambda name: {'identifier': name, 'number': individualRanksNSuits.count(name)},
                                uniqueSuitsAndRanks)
-        typicalSuit = '';
-        typicalRank = '';
-        amplestSuit = 0;
-        amplestRank = 0
+        typicalSuit = ''; typicalRank = ''; amplestSuit = 0; amplestRank = 0
         # find most common suit and rank by their number
         for identifier in identifierCounts:
             if suits.__contains__(identifier['identifier']):
@@ -194,7 +193,8 @@ def averageCoord(groups):
 
     averageX = combiendCoord[0] / divider
     averageY = combiendCoord[1] / divider
-    return (averageX, averageY)
+
+    return [averageX, averageY]
 
 
 # group 4
