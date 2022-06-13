@@ -19,7 +19,7 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-from matchSorting import concentrateMatches
+from matchOrganising import concentrateMatches, getCards, transformToCards
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
@@ -161,7 +161,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 allMatchSets.append(backsideObj)
         allMatches = allMatches + backsideMatches
 
-    finalList = concentrateMatches(allMatchSets)
+    finalList = transformToCards(allMatchSets)
     # list = layoutMatches.divideIntoColumns(allMatches, backsideMatches)
 
     if len(allMatches) != 0:

@@ -2,9 +2,8 @@
 from Identity import Identity
 from testSets import suits
 
-
-# group 1
-def concentrateMatches(allSets):
+# takes in all matches and returns a list of cards
+def transformToCards(allSets):
     # HARDCODED width between right and left side of cards
     cardwidth = 209
     allGroups = groupByLoc(allSets)
@@ -65,7 +64,10 @@ def groupByLoc(allSets):
     return allGroups
 
 
-# group 2
+
+
+
+
 # finds most common suit and rank in groups
 def typicalIdentifiers(groups):
     assmbledGroup = assembleGroup(groups)
@@ -139,7 +141,8 @@ def uniqueIdentifiers(group):
     return uniques
 
 
-# group 3
+
+
 # divides given groups into two categories, those that have a twin suit/rank and singles that don't
 def divideTwinsAndSingles(allGroups):
     twins = list()
@@ -199,7 +202,10 @@ def averageCoordBetweenTwins(twinGroup):
     return coord
 
 
-# group 4
+
+
+
+
 # finds the average x axis distance between neighbouring columns
 def averageDistanceToNeighbourColumn(cards):
     dividedCards = divideTopcardsAndBottomCards(cards)
@@ -215,7 +221,6 @@ def averageDistanceToNeighbourColumn(cards):
 
     avgDistance = totalDistance/len(allDistances)
     return avgDistance
-
 
 
 # divide cards between talon + foundations and columns
@@ -243,9 +248,8 @@ def distanceToNeighbourColumn(cards, selectedCard):
         if minX < distance < maxX:
             distances.append(distance)
     return distances
-# BUGGED: the logic behind whether the card is right or left is flawed, it itself depends on whether it is right or left
-# returns (probably) whether match is on the left or right side of card
 
+# returns whether a match is on the left or right side of card
 def isMatchRightOrLeft(cards, match, columnDistance):
     # HARDCODED value that splits foundations and talons with columns
     maxY = 900
@@ -281,7 +285,6 @@ def isMatchRightOrLeft(cards, match, columnDistance):
     return side
 
 
-# group 5
 # testing method for supplying transparency for data in groups
 def printGroup(group):
     print("NEW GROUP: ")
