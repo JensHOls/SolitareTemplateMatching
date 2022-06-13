@@ -32,11 +32,6 @@ def concentrateMatches(allSets):
         templist.append(Identity(name, coord))
     identityList += templist
 
-    for identity in identityList:
-        name = identity.getName()
-        if name == "five diamond" or name == "king diamond" or name == "queen club":
-            identity.printMe()
-
     return identityList
 
 
@@ -269,11 +264,6 @@ def isMatchRightOrLeft(cards, match, columnDistance):
                 shortestDistance = abs(xdifference)
                 xdif = xdifference
 
-
-    print("\n")
-    match.printMe()
-    print("shortest distance " + str(shortestDistance))
-    print("x dif " + str(xdif))
     width = abs(shortestDistance) % columnDistance
     if xdif > 0:
         if shortestDistance < minX:
