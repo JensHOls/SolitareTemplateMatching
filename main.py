@@ -19,7 +19,7 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-from matchOrganising import concentrateMatches, getCards, transformToCards
+from matchOrganising import transformToCards
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
