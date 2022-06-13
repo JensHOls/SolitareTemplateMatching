@@ -14,7 +14,7 @@ def concentrateMatches(allSets):
     identityList = list()
     for twinGroup in twinsList:
         name = typicalIdentifiers(twinGroup[0] + twinGroup[1])
-        coord = averageCoord(twinGroup)
+        coord = averageCoordBetweenTwins(twinGroup)
         identity = Identity(name, coord)
         identityList.append(identity)
 
@@ -195,6 +195,13 @@ def averageCoord(groups):
     averageY = combiendCoord[1] / divider
 
     return [averageX, averageY]
+
+# finds average coordinates of each twin and then average coordinates between them
+def averageCoordBetweenTwins(twinGroup):
+    coord1 = averageCoord(twinGroup[0])
+    coord2 = averageCoord(twinGroup[1])
+    coord = [(coord1[0] + coord2[0]) / 2, (coord1[1] + coord2[1]) / 2]
+    return coord
 
 
 # group 4
