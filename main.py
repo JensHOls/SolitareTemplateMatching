@@ -162,14 +162,13 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         allMatches = allMatches + backsideMatches
 
     finalList = concentrateMatches(allMatchSets)
-    # list = layoutMatches.divideIntoColumns(allMatches, backsideMatches)
+    columnList = layoutMatches.divideIntoColumns(finalList, backsideMatches)
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
         if show:
             rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30L, 30L))
             showImage(testImage, rois)
-
 
 for threshold in matchingThresholds:
     print('THRESHOLD: ' + str(threshold) + '\n')
