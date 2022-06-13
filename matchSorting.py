@@ -23,8 +23,6 @@ def concentrateMatches(allSets):
     for singleGroup in singlesList:
         name = typicalIdentifiers(singleGroup)
         coord = averageCoord(singleGroup)
-        # print(name)
-        # print(coord)
         identity = Identity(name, coord)
         if name != 'backside':
             side = isMatchRightOrLeft(identityList, identity, columnDistance)
@@ -35,8 +33,8 @@ def concentrateMatches(allSets):
     identityList += templist
 
     for identity in identityList:
-        if identity.getName() == 'king diamond' or identity.getName() == 'queen club' or identity.getName() == 'five diamond':
-            print("\n")
+        name = identity.getName()
+        if name == "five diamond" or name == "king diamond" or name == "queen club":
             identity.printMe()
 
     return identityList
@@ -245,27 +243,46 @@ def distanceToNeighbourColumn(cards, selectedCard):
     return distances
 # BUGGED: the logic behind whether the card is right or left is flawed, it itself depends on whether it is right or left
 # returns (probably) whether match is on the left or right side of card
+
 def isMatchRightOrLeft(cards, match, columnDistance):
     # HARDCODED value that splits foundations and talons with columns
     maxY = 900
-    # HARDCODED value to prevent neighbour column matches in own matches column
-    minX = 200
+    # HARDCODED value to differentiate between distance comparison with card in own column and other column
+    minX = 225
     shortestDistance = 5000
-    cards[0].getCoord()
+    xdif = 0
+    sides = ['left', 'right']
 
     xval = match.getCoord()[0]
     for card in cards:
+        # TEMPORARY: below 'if statement' should be removed when Solitare game requirements are applied.
         if card.getCoord()[1] > maxY:
-            xdifference = abs(card.getCoord()[0] - xval)
-            if shortestDistance > xdifference > minX:
-                shortestDistance = xdifference
+            xdifference = xval - card.getCoord()[0]
+            if shortestDistance > abs(xdifference):
+                shortestDistance = abs(xdifference)
+                xdif = xdifference
+
+
     print("\n")
     match.printMe()
     print("shortest distance " + str(shortestDistance))
-    width = shortestDistance % columnDistance
-    if width > columnDistance/2:
-        return 'left'
-    else: return 'right'
+    print("x dif " + str(xdif))
+    width = abs(shortestDistance) % columnDistance
+    if xdif > 0:
+        if shortestDistance < minX:
+            if xdif <= 0:
+                side = sides[0]
+            else: side = sides[1]
+        else:
+            if width >= (columnDistance / 2):
+                side = sides[0]
+            else: side = sides[1]
+    else:
+        if width >= (columnDistance / 2):
+            side = sides[1]
+        else: side = sides[0]
+    return side
+
 
 # group 5
 # testing method for supplying transparency for data in groups
