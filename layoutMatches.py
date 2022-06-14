@@ -53,12 +53,11 @@ def divideIntoColumns(allMatches):
         prev_x = current_x
 
     # now we combine the two lists of lists
-    combinedList = [[], [], [], [], [], [],[]]
 
     index = 0
-    for i in combinedList:
-        i = sorted(combinedList[index], key=lambda match: match.coord[0])
-    return combinedList
+    for i in columnMatches:
+        i = sorted(columnMatches[index], key=lambda match: match.coord[0])
+    return columnMatches
 
 # remove duplicates and false positives now (out of scope for this branch)
 # --------------------------------------------------------------------------
