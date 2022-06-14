@@ -93,7 +93,7 @@ def printColumnsDivided(allMatches):
         print("row " + str(i+1) +":")
         for i in rows[i]:
             print (i.name)
-            print ("\n")
+        print ("\n")
 
 
 # remove duplicates and false positives now (out of scope for this branch)
