@@ -87,5 +87,14 @@ def divideIntoColumns(allMatches):
             rows[i] = sorted(rows[i], key=lambda match: match.coord[1])
     return rows
 
+def printColumnsDivided(allMatches):
+    rows = divideIntoColumns(allMatches)
+    for i in range(len(rows)):
+        print("column " + str(i) +":")
+        for i in rows[i]:
+            print (i.name)
+            print ("\n")
+
+
 # remove duplicates and false positives now (out of scope for this branch)
 # --------------------------------------------------------------------------
