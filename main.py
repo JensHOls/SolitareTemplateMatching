@@ -162,7 +162,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         allMatches = allMatches + backsideMatches
 
     finalList = concentrateMatches(allMatchSets)
-    columnList = layoutMatches.divideIntoColumns(finalList, backsideMatches)
+    columnList = layoutMatches.divideIntoColumns(finalList)
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
