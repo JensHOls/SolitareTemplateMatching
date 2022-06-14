@@ -23,7 +23,7 @@ from matchSorting import concentrateMatches
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test6.png']
+testImages = ['test2.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.80]
@@ -162,7 +162,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         allMatches = allMatches + backsideMatches
 
     finalList = concentrateMatches(allMatchSets)
-    columnList = layoutMatches.divideIntoColumns(finalList, backsideMatches)
+    columnList = layoutMatches.divideIntoColumns(finalList)
+    layoutMatches.printColumnsDivided(finalList)
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
