@@ -1,6 +1,6 @@
 import cv2
 import Identity
-
+import math
 # collecting all matches into 'card dictionaries' with coordinates with both rank and suit
 
 def divideIntoColumns(allMatches):
@@ -8,7 +8,7 @@ def divideIntoColumns(allMatches):
     foundationMatches = []
     columnMatches = []
     talonMatches = []
-    talonfoundationafgraensning = (1209L, 570L)
+    talonfoundationafgraensning = (1209+472L, 570+354L)
 
     for match in allMatches:
         if match.coord[0] > talonfoundationafgraensning[0] and match.coord[1] < \
@@ -24,10 +24,11 @@ def divideIntoColumns(allMatches):
 
     # we sort the cards in terms of x axis (basically, we start at the left most card(
     columnMatches = sorted(columnMatches, key=lambda match: match.coord[0])
+    talonMatches = sorted(talonMatches, key=lambda match: match.coord[0])
+    foundationMatches = sorted(foundationMatches, key=lambda match: match.coord[0])
 
     # list with 7 lists in order to seperate column
-    columnMatchesRows = [[], [], [], [], [], [],[]]
-
+    rows = [[], [], [], [], [], [], [], [], [], [], [], []]
 
     index = 0
     prev_x = 0
@@ -39,25 +40,51 @@ def divideIntoColumns(allMatches):
         # the first value
         if index <= 6:
             if prev_x == 0:
-                prev_x = current_x
-                columnMatchesRows[index].append(match)
-                continue
-            # for same row
-            if difference < 50:
-                columnMatchesRows[index].append(match)
-            # for new row
-            if difference >= 50:
-                    index = index + 1
-                    if index <= 6:
-                        columnMatchesRows[index].append(match)
+                if index <= 6:
+                    prev_x = current_x
+                    rows[index].append(match)
+                    continue
+
+            if 0 <= difference <= 310:
+                if index <= 6:
+                    rows[index].append(match)
+
+            if difference > 310:
+                rowsJumped = int(round(difference/310, 0))
+                index = index + rowsJumped
+                if index <= 6:
+                    rows[index].append(match)
+
         prev_x = current_x
 
+    prev_x = 0
+    index = 7
+        # cards into columns
+    for match in foundationMatches:
+        current_x = match.coord[0]
+        difference = current_x - prev_x
+        # the first value
+        if index <= 10:
+            if prev_x == 0:
+                if index <= 10:
+                    prev_x = current_x
+                    rows[index].append(match)
+                    continue
+            # for new row
+            if 0 <= difference <= 310:
+                if index <= 10:
+                    rows[index].append(match)
+            if difference > 310:
+                rowsJumped = int(round(difference / 310, 0))
+                index = index + rowsJumped
+                if index <= 10:
+                    rows[index].append(match)
+        prev_x = current_x
     # now we combine the two lists of lists
+    for match in talonMatches:
+        rows[11].append(match)
 
-    index = 0
-    for i in columnMatches:
-        i = sorted(columnMatches[index], key=lambda match: match.coord[0])
-    return columnMatches
+    return rows
 
 # remove duplicates and false positives now (out of scope for this branch)
 # --------------------------------------------------------------------------
