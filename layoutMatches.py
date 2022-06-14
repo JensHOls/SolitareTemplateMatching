@@ -80,10 +80,11 @@ def divideIntoColumns(allMatches):
                 if index <= 10:
                     rows[index].append(match)
         prev_x = current_x
-    # now we combine the two lists of lists
-    for match in talonMatches:
-        rows[11].append(match)
-
+    # now we sort the list according to the y axis
+    index = 0
+    for i in range(len(rows)):
+        if len(rows[i]) != 0:
+            rows[i] = sorted(rows[i], key=lambda match: match.coord[1])
     return rows
 
 # remove duplicates and false positives now (out of scope for this branch)
