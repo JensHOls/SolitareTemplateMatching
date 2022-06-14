@@ -90,10 +90,16 @@ def divideIntoColumns(allMatches):
 def printColumnsDivided(allMatches):
     rows = divideIntoColumns(allMatches)
     for i in range(len(rows)):
-        print("row " + str(i+1) +":")
-        for i in rows[i]:
-            print (i.name)
-        print ("\n")
+        if i in range(0, 7):
+            print("Column " + str(i+1) +":")
+        if i in range(7, 11):
+            print("Foundation " + str(i + 1 - 7) + ":")
+        if i == 11:
+            print("Talon:")
+        if len(rows[i]) != 0:
+            for i in rows[i]:
+                print (i.name)
+            print ("\n")
 
 
 # remove duplicates and false positives now (out of scope for this branch)
