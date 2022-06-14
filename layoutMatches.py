@@ -45,12 +45,12 @@ def divideIntoColumns(allMatches):
                     rows[index].append(match)
                     continue
 
-            if 0 <= difference <= 310:
+            if 0 <= difference <= 300:
                 if index <= 6:
                     rows[index].append(match)
 
-            if difference > 310:
-                rowsJumped = int(round(difference/310, 0))
+            if difference > 300:
+                rowsJumped = int(round(difference/300, 0))
                 index = index + rowsJumped
                 if index <= 6:
                     rows[index].append(match)
@@ -71,11 +71,11 @@ def divideIntoColumns(allMatches):
                     rows[index].append(match)
                     continue
             # for new row
-            if 0 <= difference <= 310:
+            if 0 <= difference <= 300:
                 if index <= 10:
                     rows[index].append(match)
-            if difference > 310:
-                rowsJumped = int(round(difference / 310, 0))
+            if difference > 300:
+                rowsJumped = int(round(difference / 300, 0))
                 index = index + rowsJumped
                 if index <= 10:
                     rows[index].append(match)
