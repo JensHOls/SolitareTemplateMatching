@@ -45,12 +45,12 @@ def divideIntoColumns(allMatches):
                     rows[index].append(match)
                     continue
 
-            if 0 <= difference <= 310:
+            if 0 <= difference <= 300:
                 if index <= 6:
                     rows[index].append(match)
 
-            if difference > 310:
-                rowsJumped = int(round(difference/310, 0))
+            if difference > 300:
+                rowsJumped = int(round(difference/300, 0))
                 index = index + rowsJumped
                 if index <= 6:
                     rows[index].append(match)
@@ -71,20 +71,30 @@ def divideIntoColumns(allMatches):
                     rows[index].append(match)
                     continue
             # for new row
-            if 0 <= difference <= 310:
+            if 0 <= difference <= 300:
                 if index <= 10:
                     rows[index].append(match)
-            if difference > 310:
-                rowsJumped = int(round(difference / 310, 0))
+            if difference > 300:
+                rowsJumped = int(round(difference / 300, 0))
                 index = index + rowsJumped
                 if index <= 10:
                     rows[index].append(match)
         prev_x = current_x
-    # now we combine the two lists of lists
-    for match in talonMatches:
-        rows[11].append(match)
-
+    # now we sort the list according to the y axis
+    index = 0
+    for i in range(len(rows)):
+        if len(rows[i]) != 0:
+            rows[i] = sorted(rows[i], key=lambda match: match.coord[1])
     return rows
+
+def printColumnsDivided(allMatches):
+    rows = divideIntoColumns(allMatches)
+    for i in range(len(rows)):
+        print("row " + str(i+1) +":")
+        for i in rows[i]:
+            print (i.name)
+        print ("\n")
+
 
 # remove duplicates and false positives now (out of scope for this branch)
 # --------------------------------------------------------------------------
