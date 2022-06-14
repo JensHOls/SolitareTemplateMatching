@@ -162,7 +162,6 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         allMatches = allMatches + backsideMatches
 
     finalList = transformToCards(allMatchSets)
-    # list = layoutMatches.divideIntoColumns(allMatches, backsideMatches)
     columnList = layoutMatches.divideIntoColumns(finalList)
 
     if len(allMatches) != 0:
