@@ -57,4 +57,5 @@ def getCardsInImage(image):
         cards = testSets.t4
     else:
         cards = []
+    cards = list(cards)
     return cards.pop(len(cards) - 1), cards
