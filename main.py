@@ -21,15 +21,15 @@ from imageModification import addPadding
 # when True displays image with detected areas
 from matchOrganising import transformToCards
 
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
+testImages = ['test6.png']
 
-matchingThresholds = [.74,.75,.76,.77,.78,.79,.80,.81,.82,.83,.84,.85,.86]
-matchingThresholds = [.82,.83,.84,.85,.86]
+matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
+matchingThresholds = [.80]
 # range of rotation to be applied to source image
-rotations = [-1,-2,-3,-4,-5,-6,1,2,4,3,5,6,0]
-# rotations = [0]
+rotations = [-3, -6, 3, 6, 0]
+rotations = [0]
 
 # dimensions of image
 dimensions = [4032, 3024]
@@ -163,6 +163,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
     finalList = transformToCards(allMatchSets)
     # list = layoutMatches.divideIntoColumns(allMatches, backsideMatches)
+    columnList = layoutMatches.divideIntoColumns(finalList)
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)

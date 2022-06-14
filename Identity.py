@@ -2,7 +2,6 @@ class Identity:
     coord = [0, 0]
     name = ""
 
-
     def __init__(self, name, loc):
         self.name = name
         self.coord = loc
