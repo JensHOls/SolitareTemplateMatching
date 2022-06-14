@@ -90,7 +90,7 @@ def divideIntoColumns(allMatches):
 def printColumnsDivided(allMatches):
     rows = divideIntoColumns(allMatches)
     for i in range(len(rows)):
-        print("column " + str(i) +":")
+        print("row " + str(i+1) +":")
         for i in rows[i]:
             print (i.name)
             print ("\n")
