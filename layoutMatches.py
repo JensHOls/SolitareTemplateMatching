@@ -1,43 +1,30 @@
 import cv2
+import Identity
 
 # collecting all matches into 'card dictionaries' with coordinates with both rank and suit
 
 def divideIntoColumns(allMatches, backsideMatches):
-    allMatchesPaired = []
-    for matchOne in allMatches:
-        suitTopLeft = matchOne['topLeft']
-        suitName = matchOne['name']
-        if suitName == 'heart' or suitName == 'diamond' or suitName == 'club' or suitName == 'spade':
-            for matchTwo in allMatches:
-                typeTopLeft = matchTwo['topLeft']
-                typeName = matchTwo['name']
-                if typeName != 'heart' and typeName != 'diamond' and typeName != 'club' and typeName != 'spade' and typeName != 'backside':
-                    if suitTopLeft[1] - typeTopLeft[1] < 60:
-                        if (suitTopLeft[0] - typeTopLeft[0] < 25 and suitTopLeft[0] - typeTopLeft[0] > -25):
-                            suitRankPair = {'suitTopLeft': suitTopLeft, 'typeTopLeft': typeTopLeft,
-                                            'name': suitName + typeName}
-                            allMatchesPaired.append(suitRankPair)
     # match seperation into column, foundation and talon cards
     foundationMatches = []
     columnMatches = []
     talonMatches = []
     talonfoundationafgraensning = (1209L, 570L)
 
-    for match in allMatchesPaired:
-        if match['suitTopLeft'][0] > talonfoundationafgraensning[0] and match['suitTopLeft'][1] < \
+    for match in allMatches:
+        if match.coord[0] > talonfoundationafgraensning[0] and match.coord[1] < \
                 talonfoundationafgraensning[1]:
             foundationMatches.append(match)
-        if match['suitTopLeft'][0] < talonfoundationafgraensning[0] and match['suitTopLeft'][1] < \
+        if match.coord[0] < talonfoundationafgraensning[0] and match.coord[1] < \
                 talonfoundationafgraensning[1]:
             talonMatches.append(match)
-        if match['suitTopLeft'][1] > talonfoundationafgraensning[1]:
+        if match.coord[1] > talonfoundationafgraensning[1]:
             columnMatches.append(match)
 
     # finally column rows into columns
 
     # we sort the cards in terms of x axis (basically, we start at the left most card(
-    columnMatches = sorted(columnMatches, key=lambda match: match['suitTopLeft'][0])
-    backsideMatches = sorted(backsideMatches, key=lambda match: match['topLeft'][0])
+    columnMatches = sorted(columnMatches, key=lambda match: match.coord[0])
+    backsideMatches = sorted(backsideMatches, key=lambda match: match['actualLoc'][0])
 
     # list with 7 lists in order to seperate column
     columnMatchesRows = [[], [], [], [], [], [],[]]
@@ -47,7 +34,7 @@ def divideIntoColumns(allMatches, backsideMatches):
     prev_x = 0
     # backside into columns
     for match in backsideMatches:
-        current_x = match['topLeft'][0]
+        current_x = match['actualLoc'][0]
         difference = current_x - prev_x
         # the first value
         if prev_x == 0:
@@ -68,7 +55,7 @@ def divideIntoColumns(allMatches, backsideMatches):
 
     # cards into columns
     for match in columnMatches:
-        current_x = match['suitTopLeft'][0]
+        current_x = match.coord[0]
         difference = current_x - prev_x
         # the first value
         if index <= 6:
@@ -99,7 +86,7 @@ def divideIntoColumns(allMatches, backsideMatches):
             if len(columnList) != 0:
                 for backsideList in backsideMatchesRows:
                     if len(backsideList) != 0:
-                        difference = backsideList[0]['topLeft'][0]-columnList[0]['suitTopLeft'][0]
+                        difference = backsideList[0]['actualLoc'][0]-columnList[0].coord[0]
                         if difference < 107 and difference > 0:
                             for backsideMatch in backsideList:
                                 combinedList[index].append(backsideMatch)

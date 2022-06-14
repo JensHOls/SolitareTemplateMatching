@@ -19,9 +19,22 @@ class MatchCombination:
         return self.ranks
 
     def getCoord(self):
-        return self.coord
+        x = self.coord[0]
+        y = self.coord[1]
+        return x, y
 
     def hasSubGroup(self):
         return self.subGrouped
+
+    def printMe(self):
+        print("SUIT: ")
+        print(self.suit)
+        print("RANK: ")
+        print(self.ranks)
+        print("COORDS: ")
+        print(self.coord)
+
+
+
 
 
