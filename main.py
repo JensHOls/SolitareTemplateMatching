@@ -40,8 +40,8 @@ rotations = [0]
 # dimensions of image
 dimensions = [4032, 3024]
 # it's faster to scan a smaller area rather than the whole screen
-areaToScanTopLeft = (0L, 0L)
-areaToScanBottomRight = (4032L, 3024L)
+areaToScanTopLeft = (0, 0)
+areaToScanBottomRight = (4032, 3024)
 # things we're looking for
 suits = testSets.suits
 ranks = testSets.values
@@ -99,6 +99,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
         backsideMatches = map(lambda match: {'actualLoc': match, 'name': 'backside'}, backsideMatches)
         for match in backsideMatches:
+            print(backsideMatches.__sizeof__())
+        for match in backsideMatches:
             result = rotationBacktrack(match['actualLoc'], rotation)
             match['actualLoc'] = (result[0], result[1])
 
@@ -126,8 +128,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             for suitMatch in suitMatches:
                 suitMatchTopLeft = suitMatch['topLeft']
                 # define search area for ranks
-                topLeft = (suitMatchTopLeft[0] - 5L, suitMatchTopLeft[1] - 50L)
-                bottomRight = (suitMatchTopLeft[0] + 50L, suitMatchTopLeft[1] + 0L)
+                topLeft = (suitMatchTopLeft[0] - 5, suitMatchTopLeft[1] - 50)
+                bottomRight = (suitMatchTopLeft[0] + 50, suitMatchTopLeft[1] + 0)
                 searchArea = areaToScan[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
 
                 # list of maps of ranks for a given suit match
@@ -147,25 +149,44 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                         match['actualLoc'] = (result[0], result[1])
 
                     # save single instance of every card detected
-                    if (len(rankMatch) > 0):
+                    if rankMatch.__sizeof__() > 0:
                         rankMatchSets += rankMatch
                         cardsDetected.add(rank + ' ' + suit)
-                    # store matches of a given
-                    allRankMatches = allRankMatches + rankMatch
+                    # store matches of a given rank
+                    rankMatchList = list()
+                    for match in rankMatch:
+                        rankMatchList.append(match)
+                    allRankMatches = allRankMatches.append(rankMatchList)
                 # add a suit match with its rank matches to list of all sets
                 if len(rankMatchSets) > 0:
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
-            allMatches = allMatches + suitMatches + allRankMatches
-
-        if (len(backsideMatches) > 0):
+            suitMatchList = list()
+            for match in suitMatches:
+                suitMatchList.append(match)
+            # allMatches = allMatches + suitMatchList + allRankMatches
+            allMatches.extend(suitMatchList)
+            allMatches.extend(allRankMatches)
+        print(backsideMatches.__sizeof__())
+        if backsideMatches.__sizeof__() > 0:
             allMatches += backsideMatches
+            print(backsideMatches.__sizeof__())
 
             for match in backsideMatches:
-                backsideObj = MatchCombination(match)
-                allMatchSets.append(backsideObj)
-        allMatches = allMatches + backsideMatches
+                print(match['name'])
+
+            for i in range(backsideMatches.__sizeof__()):
+                print("Q")
+
+
+            # for i in range(backsideMatches.__sizeof__()):
+            #     backsideObj = MatchCombination(backsideMatches)
+            #     allMatchSets.append(backsideObj)
+        backsideMatchList = list()
+        for match in backsideMatches:
+            backsideMatchList.append(match)
+        allMatches.extend(backsideMatchList)
 
     finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
@@ -174,7 +195,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
         if show:
-            rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30L, 30L))
+            rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30, 30))
             showImage(testImage, rois)
 
 

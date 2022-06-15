@@ -16,7 +16,7 @@ def showImage(image):
     cv2.waitKey(1) # for testing use 0
 
 def showCards(cardNames, valuesDict, suitsDict):
-    played = np.full((100L, 1800L), 255L, dtype = 'uint8')
+    played = np.full((100, 1800), 255, dtype = 'uint8')
     index = 0
     for cardName in cardNames:
         split = cardName.split(' ')
@@ -26,7 +26,7 @@ def showCards(cardNames, valuesDict, suitsDict):
         suitImg = suitsDict[suit]
         
         # value
-        topLeft = (index, 0L)
+        topLeft = (index, 0)
         bottomRight = (index + valueImg.shape[1], valueImg.shape[0])
         played[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]] = valueImg
         

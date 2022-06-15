@@ -8,7 +8,7 @@ def divideIntoColumns(allMatches):
     foundationMatches = []
     columnMatches = []
     talonMatches = []
-    talonfoundationafgraensning = (1209+472L, 570+354L)
+    talonfoundationafgraensning = (1209+472, 570+354)
 
     for match in allMatches:
         if match.coord[0] > talonfoundationafgraensning[0] and match.coord[1] < \

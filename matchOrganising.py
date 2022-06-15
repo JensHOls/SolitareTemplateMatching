@@ -219,8 +219,10 @@ def averageDistanceToNeighbourColumn(cards):
 
     for distance in allDistances:
         totalDistance += distance
+    if len(allDistances) > 0:
+        avgDistance = totalDistance / len(allDistances)
+    else: return None
 
-    avgDistance = totalDistance/len(allDistances)
     return avgDistance
 
 
