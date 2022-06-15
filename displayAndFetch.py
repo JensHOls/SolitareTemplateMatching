@@ -8,7 +8,6 @@ def showImage(testImage, rois):
     cv2.imshow(testImage, imS)  # Show image
     cv2.waitKey(0)  # Display the image infinitely until any keypres
 
-
 # loads image and returns it
 def getImage(name, template):
     filename = name + '.png';
