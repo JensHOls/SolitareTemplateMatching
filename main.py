@@ -53,11 +53,11 @@ suitsDict = {}
 for suit in suits:
     suitsDict[suit] = getImage(suit, True)
 
-backsideTemplate = getImage("backside", True)
-
 ranksDict = {}
 for rank in ranks:
     ranksDict[rank] = getImage(rank, True)
+
+backsideTemplate = getImage("backside", True)
 
 
 # get the coordinates of a point rotated minus 'degrees' around center of image
@@ -108,26 +108,26 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
 
         for suit in suitsDict:
+
             suitTemplate = suitsDict[suit]
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
+
             # find coordinates of matches in 0 degree rotated image
+            permsuitMatchesOrigin = list(suitMatchesOrigin)
             suitActualLoc = []
-            for suitMatch in suitMatchesOrigin:
+            for suitMatch in permsuitMatchesOrigin:
                 result = rotationBacktrack(suitMatch, rotation)
                 suitActualLoc += result
-            print("in suitdicts")
+
             # map locations of given suit type
-            suitMatches = map(lambda match: {'topLeft': match, 'actualLoc': (0, 0), 'name': suit}, suitMatchesOrigin)
+            suitMatches = map(lambda match: {'topLeft': match, 'actualLoc': (0, 0), 'name': suit}, permsuitMatchesOrigin)
             # insert actual locations of matches into map
             i = 0
             suitList = list()
             for match in suitMatches:
-                print("in here")
                 match['actualLoc'] = (suitActualLoc[i], suitActualLoc[i + 1])
                 suitList.append(match)
                 i += 2
-            for match in suitList:
-                print(match['name'])
 
             # We found a suit, now find the associated rank above it (if any)
             allRankMatches = []
@@ -141,6 +141,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 # list of maps of ranks for a given suit match
                 rankMatchSets = []
                 for rank in ranksDict:
+
                     rankTemplate = ranksDict[rank]
                     rankMatch = templateMatching.getMatches(searchArea, rankTemplate, matchingThreshold)
 
