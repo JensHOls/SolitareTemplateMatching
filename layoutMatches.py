@@ -11,7 +11,7 @@ def divideIntoColumns(allMatches):
     foundationMatches = []
     columnMatches = []
     talonMatches = []
-    talonfoundationafgraensning = (1209+472L, 570+354L)
+    talonfoundationafgraensning = (1209+472, 570+354)
     averageDistance = matchOrganising.averageDistanceToNeighbourColumn(allMatches)-50
 
     for match in allMatches:
