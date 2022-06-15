@@ -25,8 +25,6 @@ import sys
 
 locate_python = sys.exec_prefix
 
-print(locate_python)
-
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
@@ -60,6 +58,7 @@ backsideTemplate = getImage("backside", True)
 ranksDict = {}
 for rank in ranks:
     ranksDict[rank] = getImage(rank, True)
+
 
 # get the coordinates of a point rotated minus 'degrees' around center of image
 def rotationBacktrack(coordinates, degrees=0):
@@ -99,9 +98,14 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
         backsideMatches = map(lambda match: {'actualLoc': match, 'name': 'backside'}, backsideMatches)
 
+
+        # does this work with rotation?
+        backsideList = list()
         for match in backsideMatches:
             result = rotationBacktrack(match['actualLoc'], rotation)
             match['actualLoc'] = (result[0], result[1])
+            backsideList.append(match)
+
 
         for suit in suitsDict:
             suitTemplate = suitsDict[suit]
@@ -111,19 +115,23 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             for suitMatch in suitMatchesOrigin:
                 result = rotationBacktrack(suitMatch, rotation)
                 suitActualLoc += result
-
+            print("in suitdicts")
             # map locations of given suit type
             suitMatches = map(lambda match: {'topLeft': match, 'actualLoc': (0, 0), 'name': suit}, suitMatchesOrigin)
-
             # insert actual locations of matches into map
             i = 0
+            suitList = list()
             for match in suitMatches:
+                print("in here")
                 match['actualLoc'] = (suitActualLoc[i], suitActualLoc[i + 1])
+                suitList.append(match)
                 i += 2
+            for match in suitList:
+                print(match['name'])
 
             # We found a suit, now find the associated rank above it (if any)
             allRankMatches = []
-            for suitMatch in suitMatches:
+            for suitMatch in suitList:
                 suitMatchTopLeft = suitMatch['topLeft']
                 # define search area for ranks
                 topLeft = (suitMatchTopLeft[0] - 5, suitMatchTopLeft[1] - 50)
@@ -142,46 +150,38 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                         rankMatch)
 
                     # calculate and insert coordinates of matches in 0 degree rotated image into map
+                    rankList = list()
                     for match in rankMatch:
                         result = rotationBacktrack(match['actualLoc'], rotation)
                         match['actualLoc'] = (result[0], result[1])
+                        rankList.append(match)
 
                     # save single instance of every card detected
-                    if rankMatch.__sizeof__() > 0:
-                        rankMatchSets += rankMatch
+                    if len(rankList) > 0:
+                        rankMatchSets += rankList
                         cardsDetected.add(rank + ' ' + suit)
                     # store matches of a given rank
                     rankMatchList = list()
-                    for match in rankMatch:
+                    for match in rankList:
                         rankMatchList.append(match)
-                    allRankMatches = allRankMatches.append(rankMatchList)
+                    allRankMatches = allRankMatches + rankMatchList
                 # add a suit match with its rank matches to list of all sets
                 if len(rankMatchSets) > 0:
                     matchCombination = MatchCombination(suitMatch, rankMatchSets)
                     allMatchSets.append(matchCombination)
             # store all suit and rank matches
             suitMatchList = list()
-            for match in suitMatches:
+            for match in suitList:
                 suitMatchList.append(match)
             # allMatches = allMatches + suitMatchList + allRankMatches
-            allMatches.extend(suitMatchList)
-            allMatches.extend(allRankMatches)
+            allMatches += suitList + allRankMatches
 
-        if backsideMatches.__sizeof__() > 0:
-            allMatches += backsideMatches
+        if (len(backsideList) > 0):
+            allMatches += backsideList
 
-            # for i in range(backsideMatches.__sizeof__()):
-            #     backsideObj = MatchCombination(backsideMatches)
-            #     allMatchSets.append(backsideObj)
-        backsideMatchList = list()
-        for match in backsideMatches:
-            backsideMatchList.append(match)
-        allMatches.extend(backsideMatchList)
+    # for match in allMatches:
+    #     print(match)
 
-    print("ALL MATCHES LENGTH")
-    print(allMatches.__sizeof__())
-    for match in allMatches:
-        print(match)
 
     finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
@@ -200,3 +200,4 @@ for threshold in matchingThresholds:
         start_time = time.time()
         watchAndDisplayCards(test, threshold)
         print("--- %s seconds ---" % (time.time() - start_time))
+
