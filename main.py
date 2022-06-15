@@ -1,6 +1,8 @@
 # project is modified code from: https://github.com/naderchehab/card-detector
 import sys
 import cv2
+
+import columnsDividedDTO
 import layoutMatches
 import numpy as np
 import os.path as path
@@ -19,7 +21,13 @@ from displayAndFetch import getImage, showImage
 from imageModification import addPadding
 
 # when True displays image with detected areas
-from matchSorting import concentrateMatches
+from matchOrganising import transformToCards
+
+import sys
+
+locate_python = sys.exec_prefix
+
+print(locate_python)
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
@@ -81,6 +89,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
     allMatches = []
     allMatchSets = list()
+    start_time = time.time()
     for rotation in rotations:
         image = cv2.imread(path.join('images', testImage))
         # adds padding to prevent going out of bounds when searching in rotated image
@@ -161,10 +170,11 @@ def watchAndDisplayCards(testImage, matchingThreshold):
                 allMatchSets.append(backsideObj)
         allMatches = allMatches + backsideMatches
 
-    finalList = concentrateMatches(allMatchSets)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
     layoutMatches.printColumnsDivided(finalList)
-
+    JSONlist = columnsDividedDTO.getJsonList(columnList)
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
         if show:
