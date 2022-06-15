@@ -25,7 +25,7 @@ import sys
 
 locate_python = sys.exec_prefix
 
-show = True
+show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 testImages = ['test2.png']
 
@@ -180,8 +180,9 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         if (len(backsideList) > 0):
             allMatches += backsideList
 
-    # for match in allMatches:
-    #     print(match)
+            for match in backsideList:
+                backsideObj = MatchCombination(match)
+                allMatchSets.append(backsideObj)
 
 
     finalList = transformToCards(allMatchSets)

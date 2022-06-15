@@ -5,6 +5,8 @@ from testSets import suits
 # takes in all matches and returns a list of cards
 def transformToCards(allSets):
     # HARDCODED width between right and left side of cards
+    for set in allSets:
+        print(set.suit)
     cardwidth = 209
     allGroups = groupByLoc(allSets)
     categories = divideTwinsAndSingles(allGroups)
@@ -30,6 +32,9 @@ def transformToCards(allSets):
             else: coord[0] = coord[0] - cardwidth/2
         templist.append(Identity(name, coord))
     identityList += templist
+
+    # for identity in identityList:
+    #     identity.printMe()
 
     return identityList
 
@@ -62,9 +67,6 @@ def groupByLoc(allSets):
                         set.subGrouped = True
             allGroups.append(subGroup)
     return allGroups
-
-
-
 
 
 
@@ -150,10 +152,14 @@ def divideTwinsAndSingles(allGroups):
     for group in allGroups:
         twin = findTwin(allGroups, group)
         if twin is None:
+            print("this one is alone")
             singles.append(group)
         else:
             twins.append([group, twin])
             allGroups.remove(twin)
+    print(len(singles))
+    print(len(twins))
+
     return twins, singles
 
 
