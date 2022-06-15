@@ -1,6 +1,7 @@
 # project is modified code from: https://github.com/naderchehab/card-detector
 import sys
 import cv2
+import columnsDividedDTO
 import layoutMatches
 import numpy as np
 import os.path as path
