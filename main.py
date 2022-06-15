@@ -26,7 +26,7 @@ import sys
 
 locate_python = sys.exec_prefix
 
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
@@ -187,14 +187,13 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
     finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
-    # layoutMatches.printColumnsDivided(finalList)
+    layoutMatches.printColumnsDivided(finalList)
 
     if len(allMatches) != 0:
         testMethods.findErrors(testImage, finalList, True)
         if show:
             rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30, 30))
             showImage(testImage, rois)
-
 
 for threshold in matchingThresholds:
     print('THRESHOLD: ' + str(threshold) + '\n')

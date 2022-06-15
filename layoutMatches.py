@@ -12,7 +12,7 @@ def divideIntoColumns(allMatches):
     columnMatches = []
     talonMatches = []
     talonfoundationafgraensning = (1209+472, 570+354)
-    averageDistance = matchOrganising.averageDistanceToNeighbourColumn(allMatches)-50
+    averageDistance = matchOrganising.averageDistanceToNeighbourColumn(allMatches)-55
 
     for match in allMatches:
 
@@ -40,7 +40,7 @@ def divideIntoColumns(allMatches):
 
     # cards into columns
     for match in columnMatches:
-        current_x = match.coord[0]
+        current_x = int(match.coord[0])
         difference = current_x - prev_x
         # the first value
         if index <= 6:
@@ -55,7 +55,7 @@ def divideIntoColumns(allMatches):
                     columns[index].append(match)
 
             if difference > averageDistance:
-                columnsJumped = int(round(difference/averageDistance, 0))
+                columnsJumped = int(math.floor(difference/averageDistance))
                 index = index + columnsJumped
                 if index <= 6:
                     columns[index].append(match)
@@ -66,7 +66,7 @@ def divideIntoColumns(allMatches):
     index = 7
         # cards into columns
     for match in foundationMatches:
-        current_x = match.coord[0]
+        current_x = math.floor(match.coord[0])
         difference = current_x - prev_x
         # the first value
         if index <= 10:
@@ -80,7 +80,7 @@ def divideIntoColumns(allMatches):
                 if index <= 10:
                     columns[index].append(match)
             if difference > averageDistance:
-                columnsJumped = int(round(difference / averageDistance, 0))
+                columnsJumped = int(math.floor(difference / averageDistance))
                 index = index + columnsJumped
                 if index <= 10:
                     columns[index].append(match)
@@ -97,7 +97,7 @@ def divideIntoColumns(allMatches):
 
 def printColumnsDivided(allMatches):
     columns = divideIntoColumns(allMatches)
-    for i in range(len( columns)):
+    for i in range(len(columns)):
         if i in range(0, 7):
             print("Column " + str(i+1) +":")
         if i in range(7, 11):

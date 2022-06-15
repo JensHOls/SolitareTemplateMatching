@@ -152,13 +152,13 @@ def divideTwinsAndSingles(allGroups):
     for group in allGroups:
         twin = findTwin(allGroups, group)
         if twin is None:
-            print("this one is alone")
+            #print("this one is alone")
             singles.append(group)
         else:
             twins.append([group, twin])
             allGroups.remove(twin)
-    print(len(singles))
-    print(len(twins))
+    #print(len(singles))
+    #print(len(twins))
 
     return twins, singles
 
@@ -296,13 +296,13 @@ def isMatchRightOrLeft(cards, match, columnDistance):
 
 # testing method for supplying transparency for data in groups
 def printGroup(group):
-    print("NEW GROUP: ")
+    #print("NEW GROUP: ")
     for set in group:
-        print("SUIT: ")
+      #  print("SUIT: ")
         print(set.getSuit())
-        print("RANK: ")
+     #   print("RANK: ")
         print(set.getRanks())
-        print("LOC: ")
+       # print("LOC: ")
         print(set.getCoord())
         print("\n")
 
