@@ -214,6 +214,7 @@ def averageDistanceToNeighbourColumn(cards):
 
     for cardList in dividedCards:
         for card in cardList:
+
             allDistances += distanceToNeighbourColumn(cardList, card)
 
     for distance in allDistances:
