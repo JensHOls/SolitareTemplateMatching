@@ -97,9 +97,11 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         areaToScan = image[areaToScanTopLeft[1]:areaToScanBottomRight[1], areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
         backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
+        print(backsideMatches.__sizeof__())
         backsideMatches = map(lambda match: {'actualLoc': match, 'name': 'backside'}, backsideMatches)
+        print(backsideMatches.__sizeof__())
         for match in backsideMatches:
-            print(backsideMatches.__sizeof__())
+            print(match["name"])
         for match in backsideMatches:
             result = rotationBacktrack(match['actualLoc'], rotation)
             match['actualLoc'] = (result[0], result[1])
@@ -107,16 +109,19 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         for suit in suitsDict:
             suitTemplate = suitsDict[suit]
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
-
+            print("hey here twooo!")
             # find coordinates of matches in 0 degree rotated image
             suitActualLoc = []
             for suitMatch in suitMatchesOrigin:
                 result = rotationBacktrack(suitMatch, rotation)
                 suitActualLoc += result
-
+            print("and here three!")
             # map locations of given suit type
             suitMatches = map(lambda match: {'topLeft': match, 'actualLoc': (0, 0), 'name': suit}, suitMatchesOrigin)
-
+            print(suitMatches.__sizeof__())
+            for e in suitMatches:
+                print("we're in this loop")
+                print(e['actualLoc'])
             # insert actual locations of matches into map
             i = 0
             for match in suitMatches:
