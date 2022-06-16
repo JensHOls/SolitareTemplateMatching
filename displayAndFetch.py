@@ -1,6 +1,9 @@
+import os
+
 import cv2
 import os.path as path
 import screen
+from os.path import dirname, join
 
 def showImage(testImage, rois):
     cv2.namedWindow(testImage, cv2.WINDOW_AUTOSIZE)  # Create window with freedom of dimensions
@@ -11,7 +14,9 @@ def showImage(testImage, rois):
 
 # loads image and returns it
 def getImage(name, template):
-    filename = name + '.png';
+    filename = name + '.png'
+    # filename = join(dirname(__file__), name + '.png')
+
     if template:
         image = cv2.imread(path.join('templates', filename))
     else:

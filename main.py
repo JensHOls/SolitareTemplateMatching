@@ -20,10 +20,7 @@ from imageModification import addPadding
 
 # when True displays image with detected areas
 from matchOrganising import transformToCards
-
 import sys
-
-locate_python = sys.exec_prefix
 
 show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
@@ -59,6 +56,16 @@ for rank in ranks:
 
 backsideTemplate = getImage("backside", True)
 
+def recognizeImage():
+    for threshold in matchingThresholds:
+        print('THRESHOLD: ' + str(threshold) + '\n')
+        for test in testImages:
+            start_time = time.time()
+            watchAndDisplayCards(test, threshold)
+            print("--- %s seconds ---" % (time.time() - start_time))
+    # return 'hello world'
+
+
 
 # get the coordinates of a point rotated minus 'degrees' around center of image
 def rotationBacktrack(coordinates, degrees=0):
@@ -77,6 +84,8 @@ def rotationBacktrack(coordinates, degrees=0):
 def watchAndDisplayCards(testImage, matchingThreshold):
     cardsDetected.clear()
     originImage = cv2.imread(path.join('images', testImage))
+    print("IMAGE")
+    print(originImage)
     originImage = cv2.resize(originImage, (3088, 2316))
     # add padding to image to prevent search area from going out of bounds during template matching
     originImage = addPadding(originImage, dimensions)
@@ -196,10 +205,5 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             showImage(testImage, rois)
 
 
-for threshold in matchingThresholds:
-    print('THRESHOLD: ' + str(threshold) + '\n')
-    for test in testImages:
-        start_time = time.time()
-        watchAndDisplayCards(test, threshold)
-        print("--- %s seconds ---" % (time.time() - start_time))
 
+print(recognizeImage())
