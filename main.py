@@ -2,6 +2,7 @@
 import sys
 import cv2
 import columnsDividedDTO
+import displayAndFetch
 import layoutMatches
 import numpy as np
 import os.path as path
@@ -26,8 +27,10 @@ import sys
 
 locate_python = sys.exec_prefix
 
-show = True
+show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
+testImages = ['test4.png']
+
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.80]
@@ -80,13 +83,14 @@ def watchAndDisplayCards(testImage, matchingThreshold):
     originImage = cv2.resize(originImage, (3088, 2316))
     # add padding to image to prevent search area from going out of bounds during template matching
     originImage = addPadding(originImage, dimensions)
-    originImage = screen.imageToBw(originImage)
+    # originImage = screen.imageToBw(originImage)
     originAreaToScan = originImage[areaToScanTopLeft[1]:areaToScanBottomRight[1],
                        areaToScanTopLeft[0]:areaToScanBottomRight[0]]
 
     allMatches = []
     allMatchSets = list()
     for rotation in rotations:
+        # image = cv2.imread(path.join('images', testImage))
         image = cv2.imread(path.join('images', testImage))
         # adds padding to prevent going out of bounds when searching in rotated image
         image = addPadding(image, dimensions)
@@ -187,10 +191,11 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
     finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
-    layoutMatches.printColumnsDivided(finalList)
+    layoutMatches.printColumnsDivided(columnList)
+    columnsDividedDTO.getJsonList(columnList)
 
     if len(allMatches) != 0:
-        testMethods.findErrors(testImage, finalList, True)
+        # testMethods.findErrors(testImage, finalList, True)
         if show:
             rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30, 30))
             showImage(testImage, rois)

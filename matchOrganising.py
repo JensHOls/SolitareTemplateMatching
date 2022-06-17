@@ -5,8 +5,7 @@ from testSets import suits
 # takes in all matches and returns a list of cards
 def transformToCards(allSets):
     # HARDCODED width between right and left side of cards
-    for set in allSets:
-        print(set.suit)
+
     cardwidth = 209
     allGroups = groupByLoc(allSets)
     categories = divideTwinsAndSingles(allGroups)
@@ -30,14 +29,15 @@ def transformToCards(allSets):
             if side == 'left':
                 coord[0] = coord[0] + cardwidth/2
             else: coord[0] = coord[0] - cardwidth/2
-        templist.append(Identity(name, coord))
+        templist.append(Identity(name, shiftBacksideXval(identity)))
     identityList += templist
-
-    # for identity in identityList:
-    #     identity.printMe()
-
     return identityList
 
+def shiftBacksideXval(identity):
+    # HARDCODED x-value for shifting backside x-value right
+    if identity.getName() == 'backside':
+        identity.coord = [identity.getCoord()[0]+15, identity.getCoord()[1]]
+    return identity.getCoord()
 
 # TOD0: Fix issue described in note
 # note: I'm working off the assumption that one set will fit into only one subgroup
@@ -152,13 +152,11 @@ def divideTwinsAndSingles(allGroups):
     for group in allGroups:
         twin = findTwin(allGroups, group)
         if twin is None:
-            #print("this one is alone")
             singles.append(group)
         else:
             twins.append([group, twin])
             allGroups.remove(twin)
-    #print(len(singles))
-    #print(len(twins))
+
 
     return twins, singles
 
@@ -296,15 +294,15 @@ def isMatchRightOrLeft(cards, match, columnDistance):
 
 # testing method for supplying transparency for data in groups
 def printGroup(group):
-    #print("NEW GROUP: ")
+    print("NEW GROUP: ")
     for set in group:
-      #  print("SUIT: ")
-        print(set.getSuit())
-     #   print("RANK: ")
-        print(set.getRanks())
-       # print("LOC: ")
-        print(set.getCoord())
-        print("\n")
+       print("SUIT: ")
+       print(set.getSuit())
+       print("RANK: ")
+       print(set.getRanks())
+       print("LOC: ")
+       print(set.getCoord())
+       print("\n")
 
 
 def printTwinsAndSingles(categories):
