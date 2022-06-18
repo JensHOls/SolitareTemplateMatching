@@ -1,5 +1,6 @@
 # project is modified code from: https://github.com/naderchehab/card-detector
 import sys
+from matchOrganising import transformToCards
 import cv2
 import columnsDividedDTO
 import displayAndFetch
@@ -13,23 +14,20 @@ import screen
 import testSets
 import testMethods
 import time
+import settings
+from settings import relXval, relYval
 from functools import cmp_to_key
-
 from Identity import Identity
 from MatchCombination import MatchCombination
 from displayAndFetch import getImage, showImage
 from imageModification import addPadding
-
-# when True displays image with detected areas
-from matchOrganising import transformToCards
-
 import sys
 
 locate_python = sys.exec_prefix
-
+# when True displays image with detected areas
 show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test4.png']
+testImages = ['test2.png']
 
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
@@ -39,10 +37,16 @@ rotations = [-3, -6, 3, 6, 0]
 rotations = [0]
 
 # dimensions of image
-dimensions = [4032, 3024]
-# it's faster to scan a smaller area rather than the whole screen
-areaToScanTopLeft = (0, 0)
-areaToScanBottomRight = (4032, 3024)
+dimensions = settings.dimensions
+# chosen dimensions for image
+imageDim = settings.imageDim
+# dimensions of padding added
+padDim = settings.padDim
+# base dimensions that relative x, y distances are calculated from
+baseDim = settings.baseDim
+# NEEDS DONE, SET NECESSARY RELATIVE AREA TO SEARCH
+areaToScanTopLeft = settings.areaToScanTopLeft
+areaToScanBottomRight = settings.areaToScanBottomRight
 # things we're looking for
 suits = testSets.suits
 ranks = testSets.values
@@ -56,12 +60,14 @@ suitsDict = {}
 for suit in suits:
     suitsDict[suit] = getImage(suit, True)
 
+
+
+
 ranksDict = {}
 for rank in ranks:
     ranksDict[rank] = getImage(rank, True)
 
 backsideTemplate = getImage("backside", True)
-
 
 # get the coordinates of a point rotated minus 'degrees' around center of image
 def rotationBacktrack(coordinates, degrees=0):
@@ -80,9 +86,9 @@ def rotationBacktrack(coordinates, degrees=0):
 def watchAndDisplayCards(testImage, matchingThreshold):
     cardsDetected.clear()
     originImage = cv2.imread(path.join('images', testImage))
-    originImage = cv2.resize(originImage, (3088, 2316))
+    originImage = cv2.resize(originImage, (imageDim[0], imageDim[1]))
     # add padding to image to prevent search area from going out of bounds during template matching
-    originImage = addPadding(originImage, dimensions)
+    originImage = addPadding(originImage, padDim)
     # originImage = screen.imageToBw(originImage)
     originAreaToScan = originImage[areaToScanTopLeft[1]:areaToScanBottomRight[1],
                        areaToScanTopLeft[0]:areaToScanBottomRight[0]]
@@ -92,8 +98,9 @@ def watchAndDisplayCards(testImage, matchingThreshold):
     for rotation in rotations:
         # image = cv2.imread(path.join('images', testImage))
         image = cv2.imread(path.join('images', testImage))
+        image = cv2.resize(image, (imageDim[0], imageDim[1]))
         # adds padding to prevent going out of bounds when searching in rotated image
-        image = addPadding(image, dimensions)
+        image = addPadding(image, padDim)
         image = screen.imageToBw(image)
         # rotates image by given degrees
         image = imageModification.rotate(image, rotation)
@@ -102,8 +109,6 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         backsideMatches = templateMatching.getMatches(areaToScan, backsideTemplate, matchingThreshold)
         backsideMatches = map(lambda match: {'actualLoc': match, 'name': 'backside'}, backsideMatches)
 
-
-        # does this work with rotation?
         backsideList = list()
         for match in backsideMatches:
             result = rotationBacktrack(match['actualLoc'], rotation)
@@ -114,6 +119,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         for suit in suitsDict:
 
             suitTemplate = suitsDict[suit]
+            # if suit == 'D':
+            #     suitTemplate = cv2.resize(suit, (25, 32))
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
 
             # find coordinates of matches in 0 degree rotated image
@@ -138,8 +145,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
             for suitMatch in suitList:
                 suitMatchTopLeft = suitMatch['topLeft']
                 # define search area for ranks
-                topLeft = (suitMatchTopLeft[0] - 5, suitMatchTopLeft[1] - 50)
-                bottomRight = (suitMatchTopLeft[0] + 50, suitMatchTopLeft[1] + 0)
+                topLeft = (int(suitMatchTopLeft[0] - relXval(5)), int(suitMatchTopLeft[1] - relYval(50)))
+                bottomRight = (int(suitMatchTopLeft[0] + relXval(50)), int(suitMatchTopLeft[1] + 0))
                 searchArea = areaToScan[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
 
                 # list of maps of ranks for a given suit match
@@ -197,7 +204,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
     if len(allMatches) != 0:
         # testMethods.findErrors(testImage, finalList, True)
         if show:
-            rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30, 30))
+            rois = templateMatching.highlightRois(originAreaToScan, allMatches, (relXval(30), relYval(30)))
             showImage(testImage, rois)
 
 for threshold in matchingThresholds:

@@ -1,12 +1,12 @@
 # concentrate the groups of sets to one set per group
 from Identity import Identity
+from settings import relXval, relYval
 from testSets import suits
 
 # takes in all matches and returns a list of cards
 def transformToCards(allSets):
     # HARDCODED width between right and left side of cards
-
-    cardwidth = 209
+    cardwidth = relXval(209)
     allGroups = groupByLoc(allSets)
     categories = divideTwinsAndSingles(allGroups)
     twinsList = categories[0]
@@ -31,12 +31,13 @@ def transformToCards(allSets):
             else: coord[0] = coord[0] - cardwidth/2
         templist.append(Identity(name, shiftBacksideXval(identity)))
     identityList += templist
+
     return identityList
 
 def shiftBacksideXval(identity):
     # HARDCODED x-value for shifting backside x-value right
     if identity.getName() == 'backside':
-        identity.coord = [identity.getCoord()[0]+15, identity.getCoord()[1]]
+        identity.coord = [identity.getCoord()[0] + relXval(15), identity.getCoord()[1]]
     return identity.getCoord()
 
 # TOD0: Fix issue described in note
@@ -44,7 +45,7 @@ def shiftBacksideXval(identity):
 # groups sets together by their location such that a single group is the matches for a single identifier ex (heart 4)
 def groupByLoc(allSets):
     # x,y values for which two matches in reach of each other are put into a group
-    boundry = [25, 25]
+    boundry = [relXval(25), relYval(25)]
     # holds all subgroups
     allGroups = list()
 
@@ -164,8 +165,8 @@ def divideTwinsAndSingles(allGroups):
 # finds the twin of 'group' if it doesn't exist return None
 def findTwin(allGroups, selectedGroup):
     # range for width between right and left side of cards, note: HARDCODED FOR NOW, SHOULD BE UPDATED
-    twinDistanceX = (195, 240)
-    twinDistanceY = 20
+    twinDistanceX = (relXval(195), relYval(240))
+    twinDistanceY = relYval(20)
 
     selectedGroupCoord = averageCoord(selectedGroup)
     for group in allGroups:
@@ -233,7 +234,7 @@ def averageDistanceToNeighbourColumn(cards):
 # divide cards between talon + foundations and columns
 def divideTopcardsAndBottomCards(cards):
     # HARDCODED value that splits foundations and talons with columns
-    maxY = 900
+    maxY = relYval(900)
     topcards = list()
     bottomcards = list()
     for card in cards:
@@ -246,8 +247,8 @@ def divideTopcardsAndBottomCards(cards):
 # finds distance x axis distance to neighbour columns in any exist
 def distanceToNeighbourColumn(cards, selectedCard):
     # HARDCODED max and min x axis distance between a column and it's neighbour column
-    maxX = 450
-    minX = 200
+    maxX = relXval(450)
+    minX = relYval(200)
     distances = list()
     cards.remove(selectedCard)
     for card in cards:
@@ -259,10 +260,10 @@ def distanceToNeighbourColumn(cards, selectedCard):
 # returns whether a match is on the left or right side of card
 def isMatchRightOrLeft(cards, match, columnDistance):
     # HARDCODED value that splits foundations and talons with columns
-    maxY = 900
+    maxY = relYval(900)
     # HARDCODED value to differentiate between distance comparison with card in own column and other column
-    minX = 225
-    shortestDistance = 5000
+    minX = relXval(225)
+    shortestDistance = relXval(5000)
     xdif = 0
     sides = ['left', 'right']
 
