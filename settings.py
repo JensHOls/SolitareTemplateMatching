@@ -1,7 +1,7 @@
 # dimensions of image
 dimensions = [4032, 3024]
 # chosen dimensions for image
-imageDim = [3500, 2625]
+imageDim = [3088, 2316]
 # dimensions of padding added
 padDim = [4032, 3024]
 # base dimensions that relative x, y distances are calculated from
