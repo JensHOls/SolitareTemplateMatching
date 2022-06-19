@@ -29,7 +29,7 @@ locate_python = sys.exec_prefix
 
 show = False
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test4.png']
+testImages = ['test14.jpg']
 
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
