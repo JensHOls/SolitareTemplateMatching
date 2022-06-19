@@ -27,16 +27,16 @@ import sys
 
 locate_python = sys.exec_prefix
 
-show = False
+show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test14.jpg']
+testImages = ['test19.jpg']
 
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.80]
 # range of rotation to be applied to source image
-rotations = [-3, -6, 3, 6, 0]
-rotations = [0]
+rotations = [-6,-4,-2,0,2,4,6]
+# rotations = [0]
 
 # dimensions of image
 dimensions = [4032, 3024]
@@ -93,6 +93,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         # image = cv2.imread(path.join('images', testImage))
         image = cv2.imread(path.join('images', testImage))
         # adds padding to prevent going out of bounds when searching in rotated image
+        image = cv2.resize(image, (3088, 2316))
         image = addPadding(image, dimensions)
         image = screen.imageToBw(image)
         # rotates image by given degrees
