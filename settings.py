@@ -12,11 +12,11 @@ areaToScanBottomRight = (4032, 3024)
 
 
 def relXval(x):
-    return (x / baseDim[0]) * imageDim[0]
+    return int((x / baseDim[0]) * imageDim[0])
 
 
 def relYval(y):
-    return (y / baseDim[1]) * imageDim[1]
+    return int((y / baseDim[1]) * imageDim[1])
 
 def padImageDimDiff():
     diff = [0, 0]

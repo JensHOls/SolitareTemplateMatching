@@ -27,7 +27,7 @@ locate_python = sys.exec_prefix
 # when True displays image with detected areas
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test2.png']
+testImages = ['test14.jpg']
 
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
@@ -119,8 +119,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
         for suit in suitsDict:
 
             suitTemplate = suitsDict[suit]
-            if suit == 'D':
-                suitTemplate = cv2.resize(suitTemplate, (25, 32))
+            # if suit == 'D':
+            #     suitTemplate = cv2.resize(suitTemplate, (25, 32))
             suitMatchesOrigin = templateMatching.getMatches(areaToScan, suitTemplate, matchingThreshold)
 
             # find coordinates of matches in 0 degree rotated image
@@ -198,6 +198,8 @@ def watchAndDisplayCards(testImage, matchingThreshold):
 
     finalList = transformToCards(allMatchSets)
     columnList = layoutMatches.divideIntoColumns(finalList)
+    if columnList is None:
+        return None
     layoutMatches.printColumnsDivided(columnList)
     columnsDividedDTO.getJsonList(columnList)
 
