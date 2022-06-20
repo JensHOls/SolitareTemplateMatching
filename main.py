@@ -29,14 +29,14 @@ locate_python = sys.exec_prefix
 
 show = True
 testImages = ['test2.png', 'test6.png', 'test8.png', 'test11.png', 'test12.png']
-testImages = ['test19.jpg']
+testImages = ['test2.png']
 
 
 matchingThresholds = [.80, .81, .82, .83, .84, .85, .86]
 matchingThresholds = [.80]
 # range of rotation to be applied to source image
 rotations = [-6,-4,-2,0,2,4,6]
-# rotations = [0]
+rotations = [0]
 
 # dimensions of image
 dimensions = [4032, 3024]
@@ -196,7 +196,7 @@ def watchAndDisplayCards(testImage, matchingThreshold):
     columnsDividedDTO.getJsonList(columnList)
 
     if len(allMatches) != 0:
-        # testMethods.findErrors(testImage, finalList, True)
+        testMethods.findErrors(testImage, finalList, True)
         if show:
             rois = templateMatching.highlightRois(originAreaToScan, allMatches, (30, 30))
             showImage(testImage, rois)
